@@ -1,0 +1,38 @@
+<div class="sidebar-wrapper closed" ng-class="{ 'opened': currentCourse.id }">
+
+    <div class="menubar-wrapper">
+        <div class="user-thumbnail"></div>
+        <div class="menu-items">
+            <a href="" class="item add" ng-click="createCourse()"><i class="fa fa-plus" aria-hidden="true"></i></a>
+        </div>
+    </div>
+
+    <div class="lessonbar-wrapper closed" ng-class="{ 'opened': currentCourse.id }">
+        <div class="course">
+            <span class="brand" style="background: {{ currentCourse.color }}"></span>
+            <span class="course-name">{{ currentCourse.name }}</span>
+        </div>
+        <ul class="lesson-items">
+            <li class="item" id="lesson-item-{{ lesson.id }}" ng-class="{ 'active':lesson.id==currentLesson.id }" ng-repeat="lesson in currentCourse.lessons" ng-click="selectLesson(lesson)">
+                <span class="lesson-name">{{ lesson.name }}</span>
+            </li>
+            <li class="item">
+                <input type="text" class="lesson" ng-show="newLesson==true" ng-model="lessonTitle" ng-enter="addLesson()">
+            </li>
+            <li class="item add-lesson">
+                <span ng-click="toggleAddLesson()" class="lesson-name">+ Add a lesson</span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="course-wrapper" ng-class="{'minimize':currentCourse.id}">
+        <h1 class="nav-title" ng-class="{ 'not-visible': currentCourse.id }">Course List</h1>
+        <ul class="course-menu">
+            <li class="item" id="course-item-{{ course.id }}" ng-repeat="course in courses" ng-click="selectCourse(course)" ng-class="{ 'active': currentCourse.id==course.id }">
+                <span class="brand" style="background: {{course.color}}"></span>
+                <span class="course-name">{{ course.name }}</span>
+            </li>
+        </ul>
+    </div>
+
+</div>

@@ -1,0 +1,254 @@
+<!-- Create a Lesson Panel -->
+<div class="lesson-container">
+    <div class="lesson-script">
+        <span class="breadcrumb">{{ currentCourse.name }}  /  {{ currentLesson.name }}</span>
+
+        <div class="lesson-title">Introduction</div>
+
+        <div class="lesson-script-generator">
+            <div class="generator-tools">
+                <a href="" class="tool-item action" ng-class="{'active':uploadScript==true}" data-upload="1"
+                   ng-click="toggleUploadBox()"><i class="fa fa-upload" aria-hidden="true"></i></a>
+            </div>
+
+            <div class="upload-script" ng-show="uploadScript">
+                <span class="title">Generate script from file</span>
+                <div class="file-upload main-btn">
+                    <label for="upload" class="file-upload__label">CLICK TO UPLOAD</label>
+                    <input id="upload" class="file-upload__input" type="file" name="file-upload"
+                           ngf-select="uploadFiles($file, $invalidFiles)"
+                           ngf-max-height="1000"
+                           ngf-max-size="1MB"
+                    >
+                </div>
+
+                <div class="text-success" ng-show="fileUploadStatus == 1">Upload successful</div>
+                <div class="text-danger" ng-show="fileUploadStatus == 0">Upload failed. Please try again</div>
+
+                <!--<div>
+                    File:
+                    <div>{{file.name}} {{errFile.name}} {{errFile.$error}} {{errFile.$errorParam}}
+                        <span class="progress" ng-show="file.progress >= 0">
+          <div style="width:{{file.progress}}%"
+               ng-bind="file.progress + '%'"></div>
+      </span>
+                    </div>
+                    {{errorMsg}}
+                </div>-->
+
+
+                <p>File must contain content type indicator; title tag (###), paragraph tag (#), bullet (*), image
+                    tag ([img]) and for video tag ([vid]) File type acceptable are .txt and .docx </p>
+            </div>
+
+            <div class="generator-workspace">
+                <div class="scripts-preview lesson">
+
+                    <div class="lesson">
+                        <div id="lessonContainer" class="lesson-container">
+				  			<span class="lesson-bubbles animated slideInLeft"
+                                  ng-class="{
+                                  'bullet':item.type=='bullet',
+                                  'image':item.type=='image',
+                                  'video':item.type=='video',
+                                  'edited':itemData.id==item.id
+                                  }"
+                                  ng-repeat="item in currentLessonItems"
+                                  ng-switch
+                                  on="item.type" ng-class="item.type">
+
+                                <i class="fa fa-pencil-square edit-btn" ng-click="editItem(item)" aria-hidden="true"></i>
+
+				  				<div ng-switch-when="title">
+                                    <b>{{item.content}}</b>
+                                </div>
+
+				  				<div ng-switch-when="paragraph">
+                                    <p ng-bind-html="item.content"></p>
+                                </div>
+
+				  				<div ng-switch-when="image">
+                                    <img class="img-responsive" ng-src="{{item.content}}" alt=""
+                                         ng-click="zoomImg(item.source)">
+                                </div>
+
+				  				<div ng-switch-when="video">
+                                    <iframe width="100%" height="350"
+                                            ng-src="{{item.source | trusted}}"
+                                            frameborder="0" allowfullscreen>
+                                    </iframe>
+                                </div>
+
+				  				<div ng-switch-when="bullet">
+                                    <ul>
+                                        <li><p ng-bind-html="item.content"></p>
+                                        </li>
+                                    </ul>
+                                </div>
+
+				  			</span>
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="add-new-line">
+                    <div class="input-field">
+                        <div class="generator-tools">
+                            <a href="" class="tool-item" ng-class="{'active':itemData.type=='title'}"
+                               ng-click="setItemType('title')"><i class="fa fa-bold" aria-hidden="true"></i></a>
+                            <a href="" class="tool-item" ng-class="{'active':itemData.type=='paragraph'}"
+                               ng-click="setItemType('paragraph')"><i class="fa fa-paragraph"
+                                                                      aria-hidden="true"></i></a>
+                            <a href="" class="tool-item" ng-class="{'active':itemData.type=='list'}"
+                               ng-click="setItemType('list')"><i class="fa fa-th-list" aria-hidden="true"></i></a>
+                            <a href="" class="tool-item" ng-class="{'active':itemData.type=='image'}"
+                               ng-click="setItemType('image')"><i class="fa fa-file-image-o" aria-hidden="true"></i></a>
+                            <a href="" class="tool-item" ng-class="{'active':itemData.type=='video'}"
+                               ng-click="setItemType('video')"><i class="fa fa-file-video-o" aria-hidden="true"></i></a>
+                        </div>
+                        <textarea name="" ng-model="itemData.content" ng-enter="saveItem()"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="lesson-question">
+
+        <div ng-repeat="question in currentLessonQuestions">
+
+            <div class="question-card">
+                <div class="actions">
+                    <a href="" ng-click="minimizeEditQuestion(question)">
+                        <i class="fa fa-minus-square" aria-hidden="true"></i>
+                    </a>
+                    <a href="" ng-click="toggleEditQuestion(question)">
+                        <i class="fa fa-pencil-square" aria-hidden="true"></i>
+                    </a>
+                </div>
+                <span class="question">Q: {{ question.content }}</span>
+                <span class="details">
+                <i class="fa fa-slack" aria-hidden="true"></i> Display Index: {{ question.display_index }}
+                <i class="fa fa-slack" aria-hidden="true"></i> Answer Index: {{ question.answer_index }}
+                <i class="fa fa-slack" aria-hidden="true"></i> Credit: {{ question.credit }} pts
+            </span>
+            </div>
+
+            <div class="add-question-form" ng-show="question.active">
+
+                <label>Question</label>
+                <textarea ng-model="question.content"></textarea>
+
+                <hr>
+
+                <div class="question-form-container">
+                    <div class="left">
+                        <label class="option-label">A</label>
+                        <input class="option-input" type="text" ng-model="question.options[0]">
+                    </div>
+                    <div class="right">
+                        <label class="option-label">B</label>
+                        <input class="option-input" type="text" ng-model="question.options[1]">
+                    </div>
+
+                    <div class="left">
+                        <label class="option-label">C</label>
+                        <input class="option-input" type="text" ng-model="question.options[2]">
+                    </div>
+                    <div class="right">
+                        <label class="option-label">D</label>
+                        <input class="option-input" type="text" ng-model="question.options[3]">
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="question-form-container">
+                    <div class="left">
+                        <label>Display Index</label>
+                        <input type="text" ng-model="question.display_index">
+                    </div>
+                    <div class="right">
+                        <label>Answer Index</label>
+                        <input type="text" ng-model="question.answer_index">
+                    </div>
+
+                    <div class="left">
+                        <label>Brain Credit</label>
+                        <input type="text" ng-model="question.credit">
+                    </div>
+                    <div class="right">
+                        <label>Answer</label>
+                        <input type="text" ng-model="question.answer">
+                    </div>
+                </div>
+
+                <button class="main-btn" ng-click="updateQuestion(question)">Update</button>
+
+            </div>
+
+        </div>
+
+
+        <!--<pre>
+           {{ questionData | json }}
+        </pre>-->
+
+        <div class="add-question-form" ng-show="newQuestion">
+
+            <label>Question</label>
+            <textarea ng-model="questionData.content"></textarea>
+
+            <hr>
+
+            <div class="question-form-container">
+                <div class="left">
+                    <label class="option-label">A</label>
+                    <input class="option-input" type="text" ng-model="questionData.options[0]">
+                </div>
+                <div class="right">
+                    <label class="option-label">B</label>
+                    <input class="option-input" type="text" ng-model="questionData.options[1]">
+                </div>
+
+                <div class="left">
+                    <label class="option-label">C</label>
+                    <input class="option-input" type="text" ng-model="questionData.options[2]">
+                </div>
+                <div class="right">
+                    <label class="option-label">D</label>
+                    <input class="option-input" type="text" ng-model="questionData.options[3]">
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="question-form-container">
+                <div class="left">
+                    <label>Display Index</label>
+                    <input type="text" ng-model="questionData.display_index">
+                </div>
+                <div class="right">
+                    <label>Answer Index</label>
+                    <input type="text" ng-model="questionData.answer_index">
+                </div>
+
+                <div class="left">
+                    <label>Brain Credit</label>
+                    <input type="text" ng-model="questionData.credit">
+                </div>
+                <div class="right">
+                    <label>Answer</label>
+                    <input type="text" ng-model="questionData.answer">
+                </div>
+            </div>
+
+            <button class="main-btn" ng-click="saveQuestion()">Create</button>
+
+        </div>
+
+        <a href="" class="link add-question" ng-click="toggleNewQuestion()">+ Add a question</a>
+    </div>
+</div>
+<!-- End Create a Lesson Panel -->

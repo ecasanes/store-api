@@ -1,0 +1,25 @@
+<!-- Create a Course Panel -->
+<div class="form-wrapper create-course">
+    <div class="form-header">
+        <h1>Create a Course</h1>
+    </div>
+    <div class="form-body">
+        <div class="form-group">
+            <label>Course Name <span class="important">*</span></label>
+            <input type="text" name="" ng-model="data.name">
+        </div>
+        <div class="form-group">
+            <label>Description</label>
+            <textarea name="" ng-model="data.description"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Course Brand</label>
+            <div class="selected-brand"></div>
+            <button class="main-btn color-picker"> Change color</button>
+        </div>
+    </div>
+    <div class="form-footer">
+        <button class="main-btn" ng-click="saveCourse()"> CREATE</button>
+    </div>
+</div>
+<!-- End Create a Course Panel -->

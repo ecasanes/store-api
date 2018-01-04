@@ -1,0 +1,12 @@
+<!-- Dashboard -->
+<span class="no-course-card" ng-show="courses.length<=0">No course created yet.</span>
+<div class="courses" ng-show="courses.length>0">
+    <div class="page-title">
+        <i class="fa fa-book" aria-hidden="true"></i> Courses
+    </div>
+    <div class="course-card" ng-repeat="course in courses" style="background: {{ course.color }}" ng-click="selectCourse(course)">
+        <span class="course-title">{{ course.name }}</span>
+        <span class="enrolled-users"><i class="fa fa-users" aria-hidden="true"></i> {{ course.enrolled_users }}</span>
+    </div>
+</div>
+<!-- Dashboard -->
