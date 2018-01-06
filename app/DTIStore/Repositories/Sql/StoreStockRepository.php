@@ -1,7 +1,7 @@
 <?php namespace App\DTIStore\Repositories;
 
 use App\DTIStore\Helpers\StatusHelper;
-use App\BranchStock;
+use App\StoreStock;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -10,21 +10,21 @@ class StoreStockRepository implements StoreStockInterface
 
     public function create(array $data)
     {
-        $branchStock = BranchStock::create($data);
+        $branchStock = StoreStock::create($data);
 
         return $branchStock;
     }
 
     public function find($id)
     {
-        $branchStock = BranchStock::find($id);
+        $branchStock = StoreStock::find($id);
 
         return $branchStock;
     }
 
     public function findByBranchVariationId($branchId, $variationId)
     {
-        $branchStock = BranchStock::where('branch_id', $branchId)
+        $branchStock = StoreStock::where('branch_id', $branchId)
             ->where('product_variation_id', $variationId)
             ->first();
 
@@ -33,7 +33,7 @@ class StoreStockRepository implements StoreStockInterface
 
     public function getAll()
     {
-        $branchStocks = BranchStock::all();
+        $branchStocks = StoreStock::all();
 
         return $branchStocks;
     }
@@ -158,7 +158,7 @@ class StoreStockRepository implements StoreStockInterface
 
     public function getBranchStocksByItemIds($branchId, array $itemIds)
     {
-        $branchStocks = BranchStock::where('branch_id', $branchId)
+        $branchStocks = StoreStock::where('branch_id', $branchId)
             ->whereIn('product_variation_id', $itemIds)
             ->get();
 
@@ -368,7 +368,7 @@ class StoreStockRepository implements StoreStockInterface
             $threshold = env('DEFAULT_LOW_THRESHOLD', StatusHelper::DEFAULT_LOW_THRESHOLD);
         }
 
-        $stocks = BranchStock::where('branch_stocks.id','!=',null)
+        $stocks = StoreStock::where('branch_stocks.id','!=',null)
             ->join('branches','branches.id','=','branch_stocks.branch_id')
             ->join('product_variations','product_variations.id','=','branch_stocks.product_variation_id')
             ->join('products','products.id','=','product_variations.id')

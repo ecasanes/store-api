@@ -1,10 +1,6 @@
 <?php namespace App\DTIStore\Services;
 
-use App\DTIStore\Helpers\StatusHelper;
 use App\DTIStore\Repositories\StoreInterface;
-use App\DTIStore\Repositories\BranchStaffInterface;
-use App\DTIStore\Repositories\CompanyInterface;
-use App\DTIStore\Repositories\UserInterface;
 use App\DTIStore\Repositories\UserRoleInterface;
 
 class StoreService

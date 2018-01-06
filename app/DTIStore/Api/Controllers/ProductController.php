@@ -4,11 +4,8 @@ namespace App\DTIStore\Api\Controllers;
 
 use App\DTIStore\Helpers\Rest;
 use App\DTIStore\Helpers\StatusHelper;
-use App\DTIStore\Services\ActivityService;
-use App\DTIStore\Services\StoreService;
 use App\DTIStore\Services\ProductService;
 use App\DTIStore\Services\TransactionService;
-use App\DTIStore\Services\ExportService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -16,26 +13,17 @@ class ProductController extends Controller
 {
     protected $productService;
     protected $transactionService;
-    protected $companyService;
-    protected $activityService;
-    protected $exportService;
 
     public function __construct(
         Request $request,
         ProductService $productService,
-        TransactionService $transactionService,
-        StoreService $companyService,
-        ActivityService $activityService,
-        ExportService $exportService
+        TransactionService $transactionService
     )
     {
         parent::__construct($request);
 
         $this->productService = $productService;
         $this->transactionService = $transactionService;
-        $this->companyService = $companyService;
-        $this->activityService = $activityService;
-        $this->exportService = $exportService;
 
     }
 
@@ -176,8 +164,6 @@ class ProductController extends Controller
 
         $product = $this->productService->find($productId);
 
-        //$this->activityService->logCreateProduct($this->loggedInUserId);
-
         return Rest::success($product);
 
 
@@ -212,16 +198,12 @@ class ProductController extends Controller
         $updated = $this->productService->update($id, $data);
         $product = $this->productService->find($id);
 
-        //$this->activityService->logUpdateProduct($this->loggedInUserId);
-
         return Rest::updateSuccess($updated, $product);
     }
 
     public function delete($id)
     {
         $deleted = $this->productService->delete($id);
-
-        //$this->activityService->logDeleteProduct($this->loggedInUserId);
 
         return Rest::deleteSuccess($deleted);
     }
@@ -368,8 +350,6 @@ class ProductController extends Controller
         $added = $this->productService->addStocksByVariationId($variationId, $quantity);
         $transactions = $this->transactionService->addStocksByVariationId($variationId, $quantity, $userId, $remarks);
 
-        //$this->activityService->logRestock($userId);
-
         return Rest::updateSuccess($added, $transactions);
     }
 
@@ -410,8 +390,6 @@ class ProductController extends Controller
         $added = $this->productService->subtractStocksByVariationId($variationId, $quantity);
         $transactions = $this->transactionService->subtractStocksByVariationId($variationId, $quantity, $userId, $remarks);
 
-        //$this->activityService->logRestock($userId);
-
         return Rest::updateSuccess($added, $transactions);
     }
 
@@ -447,8 +425,6 @@ class ProductController extends Controller
         }
 
         $delivery = $this->productService->findDelivery($deliveryId);
-
-        //$this->activityService->logVoidPendingDelivery($this->loggedInUserId);
 
         return Rest::updateSuccess($updated, $delivery);
 
@@ -764,8 +740,6 @@ class ProductController extends Controller
 
         $this->productService->updateDeliveryStatus($deliveryId, $deliveryConfirmedStatus);
 
-        //$this->activityService->logConfirmPendingDelivery($this->loggedInUserId);
-
         return Rest::success($deliveries);
     }
 
@@ -802,7 +776,6 @@ class ProductController extends Controller
         }
 
         // TODO: create delivery pending delivery transaction
-        //$this->activityService->logAddPendingDelivery($this->loggedInUserId);
 
         return Rest::success($delivery, [
             'items' => $deliveryItems
@@ -920,26 +893,10 @@ class ProductController extends Controller
         }
 
         // TODO: create delivery return delivery transaction
-        //$this->activityService->logReturnStock($this->loggedInUserId, $transactionId);
 
         return Rest::success($delivery, [
             'items' => $branchStockReturns
         ]);
-    }
-
-    public function export()
-    {
-        $data = $this->payload->all();
-
-        $export = $this->exportService->export($data);
-
-        if (!$export) {
-            return Rest::failed("Data might not exist on the database. Please try again");
-        }
-
-        $path = url('uploads/exports/' . $export);
-
-        return Rest::success($path);
     }
 
     public function getSpecialDiscounts()

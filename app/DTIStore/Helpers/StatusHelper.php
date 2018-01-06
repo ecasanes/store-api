@@ -9,10 +9,10 @@ class StatusHelper
 
     const NONE = 'none';
 
-    const COMPANY = 'company';
     const ADMIN = 'admin';
-    const FRANCHISEE = 'franchisee';
-    const COORDINATOR = 'coordinator';
+    const BUYER = 'buyer';
+    const SELLER = 'seller';
+    const GUEST = 'guest';
 
     const SUB_TYPE_DELIVERY = 'delivery';
 
@@ -23,12 +23,6 @@ class StatusHelper
     const DISABLED = 'disabled';
     const VOID = 'void';
     const RETURN = 'return';
-
-    const STAFF = 'staff';
-    const BRANCH = 'branch';
-    const MEMBER = 'member';
-    const COMPANY_STAFF = 'company_staff';
-    const GUEST = 'guest';
 
     const ADD_STOCK = 'add_stock';
     const SUB_STOCK = 'sub_stock';

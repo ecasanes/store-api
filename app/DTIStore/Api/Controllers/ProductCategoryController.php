@@ -4,21 +4,21 @@ namespace App\DTIStore\Api\Controllers;
 
 use App\DTIStore\Helpers\Rest;
 use App\DTIStore\Services\ProductService;
-use App\DTIStore\Services\ExportService;
 use Illuminate\Http\Request;
 
 
 class ProductCategoryController extends Controller
 {
     protected $productService;
-    protected $exportService;
 
-    public function __construct(Request $request, ProductService $productService, ExportService $exportService)
+    public function __construct(
+        Request $request,
+        ProductService $productService
+    )
     {
         parent::__construct($request);
         $this->productService = $productService;
         $this->payload = $request;
-        $this->exportService = $exportService;
     }
 
     public function getAll()
@@ -95,21 +95,6 @@ class ProductCategoryController extends Controller
         $deleted = $this->productService->deleteProductCategory($id);
 
         return Rest::deleteSuccess($deleted);
-    }
-
-    public function export()
-    {
-        $data = $this->payload->all();
-
-        $export = $this->exportService->export($data);
-
-        if(!$export) {
-            return Rest::failed("Data might not exist on the database. Please try again");
-        }
-
-        $path = url('uploads/exports/'.$export);
-
-        return Rest::success($path);
     }
 
 }

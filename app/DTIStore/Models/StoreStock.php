@@ -4,13 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class DeliveryItem extends Model
+class StoreStock extends Model
 {
     protected $fillable = [
-        'product_variation_id',
-        'delivery_id',
         'quantity',
-        'status',
+        'branch_id',
+        'current_delivery_quantity',
+        'product_variation_id',
         'deleted_at'
     ];
 }

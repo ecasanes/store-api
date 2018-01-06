@@ -10,7 +10,7 @@ use App\DTIStore\Services\TransactionService;
 use App\DTIStore\Services\UserService;
 use Illuminate\Http\Request;
 
-class BranchController extends Controller
+class StoreController extends Controller
 {
     protected $companyService;
     protected $productService;

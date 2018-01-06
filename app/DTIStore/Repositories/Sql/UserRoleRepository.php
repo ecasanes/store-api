@@ -108,4 +108,13 @@ class UserRoleRepository implements UserRoleInterface {
 
         return $hasPermissions;
     }
+
+    public function updateByUserId($userId, $storeId)
+    {
+        $updated = UserRole::where('user_id',$userId)->update([
+            'role_id' => $storeId
+        ]);
+
+        return $updated;
+    }
 }

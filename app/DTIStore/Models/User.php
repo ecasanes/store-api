@@ -18,6 +18,7 @@ class User extends Authenticatable
         'email',
         'password',
         'firstname',
+        'middlename',
         'lastname',
         'phone',
         'address',
@@ -25,7 +26,6 @@ class User extends Authenticatable
         'province',
         'zip',
         'status',
-        'branch_id_registered',
         'deleted_at'
     ];
 

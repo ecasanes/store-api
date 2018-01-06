@@ -19,4 +19,6 @@ interface UserRoleInterface
     public function findRoleByUserId($userId);
 
     public function hasPermissions($userId);
+
+    public function updateByUserId($userId, $storeId);
 }

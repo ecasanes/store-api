@@ -4,14 +4,12 @@ namespace App\DTIStore\Api\Controllers;
 
 use App\DTIStore\Helpers\Rest;
 use App\DTIStore\Helpers\StatusHelper;
-use App\DTIStore\Services\ActivityService;
 use App\DTIStore\Services\StoreService;
 use App\DTIStore\Services\ProductService;
 use App\DTIStore\Services\PusherService;
 use App\DTIStore\Services\RoleService;
 use App\DTIStore\Services\TransactionService;
 use App\DTIStore\Services\UserService;
-use App\DTIStore\Services\ExportService;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -22,19 +20,15 @@ class TransactionController extends Controller
     protected $companyService;
     protected $userService;
     protected $roleService;
-    protected $activityService;
-    protected $exportService;
     protected $pusherService;
 
     public function __construct(
         Request $request,
         ProductService $productService,
         TransactionService $transactionService,
-        StoreService $companyService,
+        StoreService $storeService,
         UserService $userService,
         RoleService $roleService,
-        ActivityService $activityService,
-        ExportService $exportService,
         PusherService $pusherService
     )
     {
@@ -42,11 +36,9 @@ class TransactionController extends Controller
 
         $this->productService = $productService;
         $this->transactionService = $transactionService;
-        $this->companyService = $companyService;
+        $this->companyService = $storeService;
         $this->userService = $userService;
         $this->roleService = $roleService;
-        $this->activityService = $activityService;
-        $this->exportService = $exportService;
         $this->pusherService = $pusherService;
     }
 
@@ -412,7 +404,6 @@ class TransactionController extends Controller
             $this->transactionService->updateTransactionItemsDiscount($transactionId, StatusHelper::GUEST, $priceRuleId);
         }
 
-        $this->activityService->logAddSale($staffId, $transactionId);
         $this->pusherService->triggerRefreshSaleEvent();
         $this->getProductAlertsByTransactionId($transactionId, $staffId);
 
@@ -575,7 +566,6 @@ class TransactionController extends Controller
             $this->transactionService->updateTransactionItemsDiscount($transactionId, StatusHelper::GUEST, $priceRuleId);
         }
 
-        $this->activityService->logAddSale($staffId, $transactionId);
         $this->pusherService->triggerRefreshSaleEvent();
         $this->getProductAlertsByTransactionId($transactionId, $staffId);
 
@@ -666,7 +656,7 @@ class TransactionController extends Controller
         $transaction = $transactionDetails['transaction'];
         $transactionId = $transaction['id'];
 
-        $this->activityService->logReturnSale($staffId, $transactionId);
+
         $this->pusherService->triggerRefreshSaleEvent();
 
         return Rest::success($transactionDetails);
@@ -738,7 +728,6 @@ class TransactionController extends Controller
         $transaction = $transactionDetails['transaction'];
         $transactionId = $transaction['id'];
 
-        $this->activityService->logAdjustmentShortByStaff($staffId, $transactionId);
         $this->pusherService->triggerNotificationToast("New short adjustment was created by Staff #.".$staffId);
 
         return Rest::success($transactionDetails);
@@ -803,7 +792,6 @@ class TransactionController extends Controller
         $this->productService->addBranchStocks($branchId, $items);
         $transactionDetails = $this->transactionService->voidAdjustmentShortTransaction($transactionId, $staffId);
 
-        $this->activityService->logAdjustmentVoidShortByStaff($staffId, $transactionId);
 
         return Rest::success($transactionDetails);
     }
@@ -919,7 +907,6 @@ class TransactionController extends Controller
         $transaction = $transactionDetails['transaction'];
         $transactionId = $transaction['id'];
 
-        $this->activityService->logAdjustmentShortOverByStaff($staffId, $transactionId);
         $this->pusherService->triggerNotificationToast("New short/over adjustment was created by Staff #.".$staffId);
 
         return Rest::success($transactionDetails);
@@ -987,7 +974,6 @@ class TransactionController extends Controller
 
         $transactionDetails = $this->transactionService->voidAdjustmentShortOverTransaction($transactionId, $staffId);
 
-        $this->activityService->logAdjustmentVoidShortOverByStaff($staffId, $transactionId);
 
         return Rest::success($transactionDetails);
     }
@@ -1083,7 +1069,6 @@ class TransactionController extends Controller
         $this->productService->addBranchStocks($branchId, $items);
         $transactionDetails = $this->transactionService->voidSaleTransaction($transactionId, $staffId);
 
-        $this->activityService->logVoidSaleByStaff($staffId, $transactionId);
 
         return Rest::success($transactionDetails, [
             'shortovers' => $shortOverTransactions
@@ -1161,7 +1146,6 @@ class TransactionController extends Controller
         $this->productService->subtractBranchStocks($branchId, $items);
         $transactionDetails = $this->transactionService->voidReturnSaleTransaction($returnSaleTransactionId, $staffId);
 
-        $this->activityService->logVoidReturnSaleByStaff($staffId, $returnSaleTransactionId);
 
         return Rest::success($transactionDetails);
     }
@@ -1284,7 +1268,6 @@ class TransactionController extends Controller
         $transactionDetails = $this->transactionService->voidSaleTransaction($transactionId, null, $userId);
 
         $this->pusherService->triggerRefreshSaleEvent();
-        $this->activityService->logVoidSale($userId, $transactionId);
 
         return Rest::success($transactionDetails);
     }
@@ -1307,7 +1290,6 @@ class TransactionController extends Controller
         $transactionDetails = $this->transactionService->voidReturnSaleTransaction($transactionId, null, $userId);
 
         $this->pusherService->triggerRefreshSaleEvent();
-        $this->activityService->logVoidReturnSale($userId, $transactionId);
 
         return Rest::success($transactionDetails);
     }
@@ -1342,7 +1324,6 @@ class TransactionController extends Controller
         $this->productService->addBranchStocks($branchId, $items);
         $transactionDetails = $this->transactionService->voidAdjustmentShortTransaction($transactionId, null, $userId);
 
-        $this->activityService->logAdjustmentVoidShort($userId, $transactionId);
 
         return Rest::success($transactionDetails);
     }
@@ -1380,7 +1361,6 @@ class TransactionController extends Controller
 
         $transactionDetails = $this->transactionService->voidAdjustmentShortOverTransaction($transactionId, null, $userId);
 
-        $this->activityService->logAdjustmentVoidShortOver($userId, $transactionId);
 
         return Rest::success($transactionDetails);
     }
@@ -1412,12 +1392,10 @@ class TransactionController extends Controller
 
             switch($alertCode){
                 case $inventoryStatusSoldOut:
-                    $this->activityService->logInventoryLowByStaff($productName." - ".$alertStatus, $staffId, $branchId);
                     $this->pusherService->triggerNotification();
                     $this->pusherService->triggerNotificationToast($productName." - ".$alertStatus, "NOTIFICATION", 'danger');
                     break;
                 case $inventoryStatusLow:
-                    $this->activityService->logInventoryLowByStaff($productName." - ".$alertStatus, $staffId, $branchId);
                     $this->pusherService->triggerNotification();
                     $this->pusherService->triggerNotificationToast($productName." - ".$alertStatus, "NOTIFICATION", 'warning');
                     break;
@@ -1514,7 +1492,6 @@ class TransactionController extends Controller
             return Rest::failed("Something went wrong while creating transaction");
         }
 
-        //$this->activityService->logShortSale($staffId);
 
         return Rest::success($transactionDetails);
     }
@@ -1598,7 +1575,6 @@ class TransactionController extends Controller
             return Rest::failed("Something went wrong while creating transaction");
         }
 
-        //$this->activityService->logShortoverSale($staffId);
 
         return Rest::success($transactionDetails);
     }
@@ -1674,7 +1650,6 @@ class TransactionController extends Controller
         $this->productService->subtractBranchStocks($branchId, $items);
         $transactionDetails = $this->transactionService->voidShortSaleTransaction($shortSaleTransactionId, $staffId);
 
-        //$this->activityService->logVoidShortSale($staffId);
 
         return Rest::success($transactionDetails);
     }
@@ -1750,24 +1725,7 @@ class TransactionController extends Controller
         $this->productService->subtractBranchStocks($branchId, $items);
         $transactionDetails = $this->transactionService->voidShortoverSaleTransaction($shortoverSaleTransactionId, $staffId);
 
-        //$this->activityService->logVoidShortoverSale($staffId);
-
         return Rest::success($transactionDetails);
-    }
-
-    public function export()
-    {
-        $data = $this->payload->all();
-
-        $export = $this->exportService->export($data);
-
-        if(!$export) {
-            return Rest::failed("Data might not exist on the database. Please try again");
-        }
-
-        $path = url('uploads/exports/'.$export);
-
-        return Rest::success($path);
     }
 
 
@@ -1850,7 +1808,6 @@ class TransactionController extends Controller
         }
 
         $this->productService->updateBranchStocksByTransactionDetails($branchId, $transactionTypeId, $transactionItems);
-        $this->activityService->logActivityByTransactionDetails($transactionId, $staffId, $transactionTypeId);
         $this->pusherService->triggerRefreshSaleEvent();
 
         return Rest::success($transaction, ['items'=>$transactionItems]);

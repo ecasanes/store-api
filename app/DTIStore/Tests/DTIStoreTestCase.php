@@ -2,7 +2,7 @@
 
 namespace App\DTIStore\Tests;
 
-use App\Branch;
+use App\Store;
 use App\BranchStaff;
 use App\CustomerUser;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
@@ -80,7 +80,7 @@ abstract class DTIStoreTestCase extends BaseTestCase
     {
         // for testing use branch 1 always
 
-        $branch = Branch::find(1);
+        $branch = Store::find(1);
 
         return $branch->key;
     }

@@ -36,6 +36,7 @@ class BackendServiceProvider extends ServiceProvider
             'User',
             'Role',
             'UserRole',
+            'UserStore',
             'Permission',
             'UserPermission',
 

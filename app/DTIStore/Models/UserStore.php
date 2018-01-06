@@ -4,15 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class BranchStaff extends Model
+class UserStore extends Model
 {
     protected $fillable = [
-        'staff_id',
-        'branch_id',
         'user_id',
-        'can_void',
-        'has_multiple_access',
-        'status',
+        'store_id',
         'deleted_at'
     ];
 }

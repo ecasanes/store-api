@@ -1,7 +1,7 @@
 <?php namespace App\DTIStore\Repositories;
 
 use App\DTIStore\Helpers\StatusHelper;
-use App\Branch;
+use App\Store;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -10,7 +10,7 @@ class StoreRepository implements StoreInterface
 
     public function create(array $data)
     {
-        $branch = Branch::create($data);
+        $branch = Store::create($data);
 
         return $branch;
     }
@@ -19,7 +19,7 @@ class StoreRepository implements StoreInterface
     {
         $branchFlag = StatusHelper::BRANCH;
 
-        $branch = Branch::where('branches.id', $id)
+        $branch = Store::where('branches.id', $id)
             ->leftJoin('branch_staffs', 'branch_staffs.branch_id', '=', 'branches.id')
             ->leftJoin('user_roles', 'user_roles.user_id', '=', 'branch_staffs.user_id')
             ->leftJoin('roles', function ($join) use ($branchFlag) {
@@ -35,7 +35,7 @@ class StoreRepository implements StoreInterface
 
     public function findByKey($key)
     {
-        $branch = Branch::where('key', $key)->first();
+        $branch = Store::where('key', $key)->first();
 
         return $branch;
     }
@@ -220,7 +220,7 @@ class StoreRepository implements StoreInterface
 
     public function update($id, $data)
     {
-        $branch = Branch::find($id);
+        $branch = Store::find($id);
 
         if (!$branch) {
             return false;
@@ -233,7 +233,7 @@ class StoreRepository implements StoreInterface
 
     public function delete($id)
     {
-        $branch = Branch::find($id);
+        $branch = Store::find($id);
 
         if (!$branch) {
             return false;
@@ -253,7 +253,7 @@ class StoreRepository implements StoreInterface
 
     public function destroy($id)
     {
-        $branch = Branch::find($id);
+        $branch = Store::find($id);
 
         if (!$branch) {
             return false;
@@ -266,7 +266,7 @@ class StoreRepository implements StoreInterface
 
     public function isDeleted($id)
     {
-        $branch = Branch::find($id);
+        $branch = Store::find($id);
 
         if (!$branch) {
             return true;
@@ -281,7 +281,7 @@ class StoreRepository implements StoreInterface
 
     public function getAllByCompanyId($companyId)
     {
-        $branches = Branch::where('company_id', $companyId)
+        $branches = Store::where('company_id', $companyId)
             ->where('status', StatusHelper::ACTIVE)
             ->get();
 

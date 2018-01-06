@@ -627,6 +627,9 @@ Route::group(['prefix' => 'users', 'middleware' => 'auth.jwt'], function () use 
     // POST - api/users
     Route::post('', $users . '@create');
 
+    // GET - api/users/current
+    Route::get('current', $users . '@getCurrent');
+
     // GET - api/users
     Route::get('', $users . '@getAll');
 

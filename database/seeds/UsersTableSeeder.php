@@ -3,23 +3,23 @@
 use App\DTIStore\Services\StoreService;
 use App\DTIStore\Services\RoleService;
 use App\DTIStore\Services\UserService;
-use App\Role;
+use App\Store;
 use App\User;
-use App\UserRole;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
 class UsersTableSeeder extends Seeder
 {
     protected $userService;
-    protected $companyService;
     protected $roleService;
     protected $password;
 
-    public function __construct(UserService $userService, StoreService $companyService, RoleService $roleService)
+    public function __construct(
+        UserService $userService,
+        RoleService $roleService
+    )
     {
         $this->userService = $userService;
-        $this->companyService = $companyService;
         $this->roleService = $roleService;
 
         $this->password = Hash::make('123');
@@ -33,6 +33,8 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         $this->createAdmin();
+        $this->createSeller();
+        $this->createBuyer();
 
     }
 
@@ -49,6 +51,47 @@ class UsersTableSeeder extends Seeder
 
         if ($adminRole) {
             $this->userService->createUserRole($admin->id, $adminRole->id);
+        }
+    }
+
+    private function createSeller()
+    {
+        $seller = User::firstOrCreate([
+            'email' => 'seller@email.com',
+            'firstname' => 'Seller',
+            'lastname' => '',
+            'password' => $this->password
+        ]);
+
+        $sellerRole = $this->roleService->findByCode('seller');
+
+        if ($sellerRole) {
+            $this->userService->createUserRole($seller->id, $sellerRole->id);
+        }
+
+        $store = Store::firstOrCreate([
+            'name' => 'Online Store 1',
+            'key' => 11111111
+        ]);
+
+        if($store){
+            $this->userService->createUserStore($seller->id, $store->id);
+        }
+    }
+
+    private function createBuyer()
+    {
+        $buyer = User::firstOrCreate([
+            'email' => 'buyer@email.com',
+            'firstname' => 'Buyer',
+            'lastname' => '',
+            'password' => $this->password
+        ]);
+
+        $buyerRole = $this->roleService->findByCode('buyer');
+
+        if ($buyerRole) {
+            $this->userService->createUserRole($buyer->id, $buyerRole->id);
         }
     }
 }

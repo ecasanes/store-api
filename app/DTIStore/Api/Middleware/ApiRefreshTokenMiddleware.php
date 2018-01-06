@@ -3,7 +3,6 @@
 namespace App\DTIStore\Api\Middleware;
 
 use App\DTIStore\Helpers\Rest;
-use App\DTIStore\Services\ActivityService;
 use App\DTIStore\Services\UserService;
 use Closure;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -15,12 +14,10 @@ class ApiRefreshTokenMiddleware
 {
 
     protected $userService;
-    protected $activityService;
 
-    public function __construct(UserService $roleService, ActivityService $activityService)
+    public function __construct(UserService $roleService)
     {
         $this->userService = $roleService;
-        $this->activityService = $activityService;
     }
 
     /**

@@ -33,7 +33,7 @@ class ApiAuthMiddleware
      */
     public function handle($request, Closure $next)
     {
-        $baseRole = StatusHelper::COMPANY_STAFF;
+        $baseRole = StatusHelper::BUYER;
         $data = $request->all();
 
         $validator = Validator::make($data, [

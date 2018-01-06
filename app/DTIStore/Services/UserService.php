@@ -2,12 +2,11 @@
 
 use App\DTIStore\Helpers\StatusHelper;
 use App\DTIStore\Repositories\StoreInterface;
-use App\DTIStore\Repositories\BranchStaffInterface;
-use App\DTIStore\Repositories\CustomerUserInterface;
 use App\DTIStore\Repositories\RoleInterface;
 use App\DTIStore\Repositories\UserInterface;
 use App\DTIStore\Repositories\UserRoleInterface;
 use App\DTIStore\Repositories\UserPermissionInterface;
+use App\DTIStore\Repositories\UserStoreInterface;
 use Illuminate\Support\Facades\Hash;
 
 class UserService
@@ -15,27 +14,24 @@ class UserService
     protected $user;
     protected $role;
     protected $userRole;
+    protected $userStore;
     protected $userPermission;
-    protected $branchStaff;
-    protected $customerUser;
     protected $branch;
 
     public function __construct(
         UserInterface $user,
         RoleInterface $role,
         UserRoleInterface $userRole,
+        UserStoreInterface $userStore,
         UserPermissionInterface $userPermission,
-        BranchStaffInterface $branchStaff,
-        CustomerUserInterface $customerUser,
         StoreInterface $branch
     )
     {
         $this->user = $user;
         $this->role = $role;
         $this->userRole = $userRole;
+        $this->userStore = $userStore;
         $this->userPermission = $userPermission;
-        $this->branchStaff = $branchStaff;
-        $this->customerUser = $customerUser;
         $this->branch = $branch;
     }
 
@@ -95,20 +91,6 @@ class UserService
     {
         return $this->createUserPermissionsByCode($userId, [$permissionCode]);
 
-    }
-
-    public function generateStaffId($userId, $branchId)
-    {
-        $staffId = $this->branchStaff->generateStaffId($userId, $branchId);
-
-        return $staffId;
-    }
-
-    public function generateCustomerId($userId)
-    {
-        $customerId = $this->customerUser->generateCustomerId($userId);
-
-        return $customerId;
     }
 
     public function updateCustomerId($userId, $customerId)
@@ -172,38 +154,6 @@ class UserService
         return $permissions;
     }
 
-    public function getStaffPrivilegesByUserId($userId)
-    {
-        $staffPrivileges = [];
-
-        $staff = $this->branchStaff->findByUserId($userId);
-
-        if (!$staff) {
-            return $staffPrivileges;
-        }
-
-        $canVoid = $staff->can_void;
-        $branchId = $staff->branch_id;
-
-        if ($canVoid) {
-            $staffPrivileges[] = StatusHelper::COORDINATOR;
-        }
-
-        $branch = $this->branch->find($branchId);
-
-        if (!$branch) {
-            return $staffPrivileges;
-        }
-
-        $branchType = $branch->type;
-
-        if ($branchType) {
-            $staffPrivileges[] = $branchType;
-        }
-
-        return $staffPrivileges;
-    }
-
     public function getRolesByUserId($userId)
     {
         $roles = $this->userRole->getRolesByUserId($userId);
@@ -228,8 +178,6 @@ class UserService
     public function update($id, $data)
     {
         $updated = $this->user->update($id, $data);
-
-        $this->branchStaff->updateByUserId($id, $data);
 
         return $updated;
     }
@@ -349,6 +297,23 @@ class UserService
 
         return $customer;
 
+    }
+
+    public function updateUserRole($userId, $roleId)
+    {
+        $updated = $this->userRole->updateByUserId($userId, $roleId);
+
+        return $updated;
+    }
+
+    public function createUserStore($userId, $storeId)
+    {
+        $userStore = $this->userStore->create([
+            'user_id' => $userId,
+            'store_id' => $storeId
+        ]);
+
+        return $userStore;
     }
 
 }

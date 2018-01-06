@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRolesTable extends Migration
+class CreateProductConditionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,11 @@ class CreateRolesTable extends Migration
      */
     public function up()
     {
-        Schema::create('roles', function (Blueprint $table) {
+        Schema::create('product_conditions', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->string('name')->unique();
-            $table->string('code')->unique();
-            $table->integer('has_permissions')->default(0);
-            $table->integer('rank')->default(0);
-
+            $table->string('name')->nullable();
+            $table->string('code')->nullable();
             $table->string('status')->default('active');
 
             $table->softDeletes();
@@ -35,6 +32,6 @@ class CreateRolesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('roles');
+        Schema::dropIfExists('product_conditions');
     }
 }

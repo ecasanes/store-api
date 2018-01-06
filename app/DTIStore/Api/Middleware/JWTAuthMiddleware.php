@@ -3,7 +3,6 @@
 namespace App\DTIStore\Api\Middleware;
 
 use App\DTIStore\Helpers\Rest;
-use App\DTIStore\Services\ActivityService;
 use App\DTIStore\Services\UserService;
 use Closure;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -15,12 +14,10 @@ class JWTAuthMiddleware
 {
 
     protected $userService;
-    protected $activityService;
 
-    public function __construct(UserService $roleService, ActivityService $activityService)
+    public function __construct(UserService $roleService)
     {
         $this->userService = $roleService;
-        $this->activityService = $activityService;
     }
 
     /**
@@ -59,20 +56,17 @@ class JWTAuthMiddleware
         }
 
         $userId = $user->id;
-        $this->activityService->logUserLogin($userId);
 
         $role = $this->userService->findRoleByUserId($userId);
         $roles = $this->userService->getRolesByUserId($userId);
         $permissions = $this->userService->getPermissionsByUserId($userId);
-        $staffPrivileges = $this->userService->getStaffPrivilegesByUserId($userId);
 
         $request->attributes->add([
             'user' => $user,
             'userId' => $user->id,
             'role' => $role,
             'roles' => $roles,
-            'permissions' => $permissions,
-            'staff_privileges' => $staffPrivileges
+            'permissions' => $permissions
         ]);
 
         return $next($request);

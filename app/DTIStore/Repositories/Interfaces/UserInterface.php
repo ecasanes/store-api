@@ -24,12 +24,6 @@ interface UserInterface
 
     public function getFilterMeta($data);
 
-    public function getCompanyManagerPermissionByUserId($id);
-
-    public function findByCustomerId($customerId);
-
     public function findByFirstnameAndLastname($firstname, $lastname);
-
-    public function getFranchiseeByEmail($email);
 
 }

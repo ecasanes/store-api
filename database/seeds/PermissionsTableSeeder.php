@@ -18,12 +18,20 @@ class PermissionsTableSeeder extends Seeder
                 'code' => 'user',
             ],
             [
-                'name' => 'Sales Management',
-                'code' => 'sales'
+                'name' => 'Buyer Management',
+                'code' => 'buyer'
+            ],
+            [
+                'name' => 'Seller Management',
+                'code' => 'seller'
             ],
             [
                 'name' => 'Inventory Management',
                 'code' => 'inventory'
+            ],
+            [
+                'name' => 'Order Management',
+                'code' => 'order'
             ]
         ];
 

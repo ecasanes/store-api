@@ -2,7 +2,7 @@
 
 namespace Tests\Unit;
 
-use App\BranchStock;
+use App\StoreStock;
 use App\DTIStore\Tests\DTIStoreTestCase;
 use App\Product;
 use App\ProductVariation;
@@ -41,8 +41,8 @@ class TransactionTest extends DTIStoreTestCase
         //assumes that there is product variation 1 and 2 in branch_stocks
         //assumes empty transaction and transaction items
 
-        $productA = BranchStock::where('product_variation_id',1)->where('branch_id',1)->first();
-        $productB = BranchStock::where('product_variation_id',2)->where('branch_id',1)->first();
+        $productA = StoreStock::where('product_variation_id',1)->where('branch_id',1)->first();
+        $productB = StoreStock::where('product_variation_id',2)->where('branch_id',1)->first();
 
         DB::statement("SET FOREIGN_KEY_CHECKS=0");
         Transaction::truncate();
@@ -78,8 +78,8 @@ class TransactionTest extends DTIStoreTestCase
 
         $saleId = $saleTransaction->json()['data']['transaction']['id'];
 
-        $productA = BranchStock::where('product_variation_id',1)->where('branch_id',1)->first();
-        $productB = BranchStock::where('product_variation_id',2)->where('branch_id',1)->first();
+        $productA = StoreStock::where('product_variation_id',1)->where('branch_id',1)->first();
+        $productB = StoreStock::where('product_variation_id',2)->where('branch_id',1)->first();
 
         $this->assertEquals(45, $productA->quantity, "Expects stocks to be 45 as it is subtracted by 5");
         $this->assertEquals(10, $productB->quantity, "Expects stocks to be 10 as it is subtracted by 10");
@@ -102,16 +102,16 @@ class TransactionTest extends DTIStoreTestCase
 
         $returnSaleId = $returnSaleTransaction->json()['data']['transaction']['id'];
 
-        $productA = BranchStock::where('product_variation_id',1)->where('branch_id',1)->first();
-        $productB = BranchStock::where('product_variation_id',2)->where('branch_id',1)->first();
+        $productA = StoreStock::where('product_variation_id',1)->where('branch_id',1)->first();
+        $productB = StoreStock::where('product_variation_id',2)->where('branch_id',1)->first();
 
         $this->assertEquals(47, $productA->quantity, "Expects stocks to be 47 as it is added by 2");
         $this->assertEquals(13, $productB->quantity, "Expects stocks to be 13 as it is added by 3");
 
         $voidReturnSaleTransaction = $this->coordinatorStaffPost('/api/tracking/transactions/sale/return/'.$returnSaleId.'/void', []);
 
-        $productA = BranchStock::where('product_variation_id',1)->where('branch_id',1)->first();
-        $productB = BranchStock::where('product_variation_id',2)->where('branch_id',1)->first();
+        $productA = StoreStock::where('product_variation_id',1)->where('branch_id',1)->first();
+        $productB = StoreStock::where('product_variation_id',2)->where('branch_id',1)->first();
 
         $this->assertEquals(45, $productA->quantity, "Expects stocks to be 47 as it is subtracted by 2");
         $this->assertEquals(10, $productB->quantity, "Expects stocks to be 13 as it is subtracted by 3");
@@ -134,16 +134,16 @@ class TransactionTest extends DTIStoreTestCase
 
         $returnSaleId = $returnSaleTransaction->json()['data']['transaction']['id'];
 
-        $productA = BranchStock::where('product_variation_id',1)->where('branch_id',1)->first();
-        $productB = BranchStock::where('product_variation_id',2)->where('branch_id',1)->first();
+        $productA = StoreStock::where('product_variation_id',1)->where('branch_id',1)->first();
+        $productB = StoreStock::where('product_variation_id',2)->where('branch_id',1)->first();
 
         $this->assertEquals(47, $productA->quantity, "Expects stocks to be 47 as it is added by 2");
         $this->assertEquals(13, $productB->quantity, "Expects stocks to be 13 as it is added by 3");
 
         $voidReturnSaleTransaction = $this->coordinatorStaffPost('/api/tracking/transactions/sale/return/'.$returnSaleId.'/void', []);
 
-        $productA = BranchStock::where('product_variation_id',1)->where('branch_id',1)->first();
-        $productB = BranchStock::where('product_variation_id',2)->where('branch_id',1)->first();
+        $productA = StoreStock::where('product_variation_id',1)->where('branch_id',1)->first();
+        $productB = StoreStock::where('product_variation_id',2)->where('branch_id',1)->first();
 
         $this->assertEquals(45, $productA->quantity, "Expects stocks to be 47 as it is subtracted by 2");
         $this->assertEquals(10, $productB->quantity, "Expects stocks to be 13 as it is subtracted by 3");
@@ -152,8 +152,8 @@ class TransactionTest extends DTIStoreTestCase
 
         $voidSaleTransaction = $this->coordinatorStaffPost('/api/tracking/transactions/'.$saleId.'/void', []);
 
-        $productA = BranchStock::where('product_variation_id',1)->where('branch_id',1)->first();
-        $productB = BranchStock::where('product_variation_id',2)->where('branch_id',1)->first();
+        $productA = StoreStock::where('product_variation_id',1)->where('branch_id',1)->first();
+        $productB = StoreStock::where('product_variation_id',2)->where('branch_id',1)->first();
 
         $this->assertEquals(50, $productA->quantity, "Expects stocks to be 50 as it is added by 5");
         $this->assertEquals(20, $productB->quantity, "Expects stocks to be 20 as it is added by 10");
@@ -169,8 +169,8 @@ class TransactionTest extends DTIStoreTestCase
         //assumes that there is product variation 1 and 2 in branch_stocks
         //assumes empty transaction and transaction items
 
-        $productA = BranchStock::where('product_variation_id',1)->where('branch_id',1)->first();
-        $productB = BranchStock::where('product_variation_id',2)->where('branch_id',1)->first();
+        $productA = StoreStock::where('product_variation_id',1)->where('branch_id',1)->first();
+        $productB = StoreStock::where('product_variation_id',2)->where('branch_id',1)->first();
 
         DB::statement("SET FOREIGN_KEY_CHECKS=0");
         Transaction::truncate();
@@ -206,8 +206,8 @@ class TransactionTest extends DTIStoreTestCase
 
         $saleId = $saleTransaction->json()['data']['transaction']['id'];
 
-        $productA = BranchStock::where('product_variation_id',1)->where('branch_id',1)->first();
-        $productB = BranchStock::where('product_variation_id',2)->where('branch_id',1)->first();
+        $productA = StoreStock::where('product_variation_id',1)->where('branch_id',1)->first();
+        $productB = StoreStock::where('product_variation_id',2)->where('branch_id',1)->first();
 
         $this->assertEquals(45, $productA->quantity, "Expects stocks to be 45 as it is subtracted by 5");
         $this->assertEquals(10, $productB->quantity, "Expects stocks to be 10 as it is subtracted by 10");
@@ -230,8 +230,8 @@ class TransactionTest extends DTIStoreTestCase
 
         $returnSaleId = $returnSaleTransaction->json()['data']['transaction']['id'];
 
-        $productA = BranchStock::where('product_variation_id',1)->where('branch_id',1)->first();
-        $productB = BranchStock::where('product_variation_id',2)->where('branch_id',1)->first();
+        $productA = StoreStock::where('product_variation_id',1)->where('branch_id',1)->first();
+        $productB = StoreStock::where('product_variation_id',2)->where('branch_id',1)->first();
 
         $this->assertEquals(47, $productA->quantity, "Expects stocks to be 47 as it is added by 2");
         $this->assertEquals(13, $productB->quantity, "Expects stocks to be 13 as it is added by 3");
@@ -240,8 +240,8 @@ class TransactionTest extends DTIStoreTestCase
 
         $voidSaleTransaction = $this->coordinatorStaffPost('/api/tracking/transactions/'.$saleId.'/void', []);
 
-        $productA = BranchStock::where('product_variation_id',1)->where('branch_id',1)->first();
-        $productB = BranchStock::where('product_variation_id',2)->where('branch_id',1)->first();
+        $productA = StoreStock::where('product_variation_id',1)->where('branch_id',1)->first();
+        $productB = StoreStock::where('product_variation_id',2)->where('branch_id',1)->first();
 
         $this->assertEquals(50, $productA->quantity, "Expects stocks to be 50 as it is added by 5");
         $this->assertEquals(20, $productB->quantity, "Expects stocks to be 20 as it is added by 10");
@@ -257,7 +257,7 @@ class TransactionTest extends DTIStoreTestCase
         //assumes that there is product variation 1 in branch_stocks
         //assumes empty transaction and transaction items
 
-        $productA = BranchStock::where('product_variation_id',1)->where('branch_id',1)->first();
+        $productA = StoreStock::where('product_variation_id',1)->where('branch_id',1)->first();
 
         DB::statement("SET FOREIGN_KEY_CHECKS=0");
         Transaction::truncate();
@@ -284,7 +284,7 @@ class TransactionTest extends DTIStoreTestCase
 
         $shortTransactionId = $shortTransaction->json()['data']['transaction']['id'];
 
-        $productA = BranchStock::where('product_variation_id',1)->where('branch_id',1)->first();
+        $productA = StoreStock::where('product_variation_id',1)->where('branch_id',1)->first();
 
         $this->assertEquals(40, $productA->quantity, "Expects stocks to be 40 as it is subtracted by 10");
 
@@ -292,7 +292,7 @@ class TransactionTest extends DTIStoreTestCase
 
         $voidShortTransaction = $this->coordinatorStaffPost('/api/tracking/transactions/products/short/'.$shortTransactionId.'/void', []);
 
-        $productA = BranchStock::where('product_variation_id',1)->where('branch_id',1)->first();
+        $productA = StoreStock::where('product_variation_id',1)->where('branch_id',1)->first();
 
         $this->assertEquals(50, $productA->quantity, "Expects stocks to be 50 as it is added by 10");
 
@@ -307,10 +307,10 @@ class TransactionTest extends DTIStoreTestCase
         //assumes that there is product variation 1 and 2 in branch_stocks
         //assumes empty transaction and transaction items
 
-        $productA = BranchStock::where('product_variation_id',1)->where('branch_id',1)->first();
-        $productB = BranchStock::where('product_variation_id',2)->where('branch_id',1)->first();
-        $productC = BranchStock::where('product_variation_id',3)->where('branch_id',1)->first();
-        $productD = BranchStock::where('product_variation_id',4)->where('branch_id',1)->first();
+        $productA = StoreStock::where('product_variation_id',1)->where('branch_id',1)->first();
+        $productB = StoreStock::where('product_variation_id',2)->where('branch_id',1)->first();
+        $productC = StoreStock::where('product_variation_id',3)->where('branch_id',1)->first();
+        $productD = StoreStock::where('product_variation_id',4)->where('branch_id',1)->first();
 
         DB::statement("SET FOREIGN_KEY_CHECKS=0");
         Transaction::truncate();
@@ -387,8 +387,8 @@ class TransactionTest extends DTIStoreTestCase
 
         $shortOverTransaction2Id = $shortOverTransaction2->json()['data']['transaction']['id'];
 
-        $productA = BranchStock::where('product_variation_id',1)->where('branch_id',1)->first();
-        $productC = BranchStock::where('product_variation_id',3)->where('branch_id',1)->first();
+        $productA = StoreStock::where('product_variation_id',1)->where('branch_id',1)->first();
+        $productC = StoreStock::where('product_variation_id',3)->where('branch_id',1)->first();
 
         $this->assertEquals(30, $productA->quantity, "Expects stocks to be 30 as it is subtracted by by 20");
         $this->assertEquals(40, $productC->quantity, "Expects stocks to be 40 as it is added by 20");
@@ -426,8 +426,8 @@ class TransactionTest extends DTIStoreTestCase
 
         $shortOverTransaction4Id = $shortOverTransaction4->json()['data']['transaction']['id'];
 
-        $productA = BranchStock::where('product_variation_id',1)->where('branch_id',1)->first();
-        $productD = BranchStock::where('product_variation_id',4)->where('branch_id',1)->first();
+        $productA = StoreStock::where('product_variation_id',1)->where('branch_id',1)->first();
+        $productD = StoreStock::where('product_variation_id',4)->where('branch_id',1)->first();
 
         $this->assertEquals(0, $productA->quantity, "Expects stocks to be 0 as it is subtracted by by 30");
         $this->assertEquals(50, $productD->quantity, "Expects stocks to be 50 as it is added by 30");
@@ -438,8 +438,8 @@ class TransactionTest extends DTIStoreTestCase
 
         $voidShortOverTransaction1->assertJsonFragment(['type' => 'success']);
 
-        $productA = BranchStock::where('product_variation_id',1)->where('branch_id',1)->first();
-        $productD = BranchStock::where('product_variation_id',4)->where('branch_id',1)->first();
+        $productA = StoreStock::where('product_variation_id',1)->where('branch_id',1)->first();
+        $productD = StoreStock::where('product_variation_id',4)->where('branch_id',1)->first();
 
         $this->assertEquals(30, $productA->quantity, "Expects stocks to be 30 as it is added by by 30");
         $this->assertEquals(20, $productD->quantity, "Expects stocks to be 20 as it is subtracted by 30");
@@ -448,10 +448,10 @@ class TransactionTest extends DTIStoreTestCase
         //FINALLY VOID TRANSACTION
         $voidSaleTransaction = $this->coordinatorStaffPost('/api/tracking/transactions/'.$saleId.'/void', []);
 
-        $productA = BranchStock::where('product_variation_id',1)->where('branch_id',1)->first();
-        $productB = BranchStock::where('product_variation_id',2)->where('branch_id',1)->first();
-        $productC = BranchStock::where('product_variation_id',3)->where('branch_id',1)->first();
-        $productD = BranchStock::where('product_variation_id',4)->where('branch_id',1)->first();
+        $productA = StoreStock::where('product_variation_id',1)->where('branch_id',1)->first();
+        $productB = StoreStock::where('product_variation_id',2)->where('branch_id',1)->first();
+        $productC = StoreStock::where('product_variation_id',3)->where('branch_id',1)->first();
+        $productD = StoreStock::where('product_variation_id',4)->where('branch_id',1)->first();
 
         $this->assertEquals(100, $productA->quantity, "Expects stocks to be 100 (original)");
         $this->assertEquals(50, $productB->quantity, "Expects stocks to be 50 (original)");
