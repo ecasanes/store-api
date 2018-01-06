@@ -1,6 +1,6 @@
 <?php
 
-use App\Mercury\Helpers\StatusHelper;
+use App\DTIStore\Helpers\StatusHelper;
 use App\Product;
 use App\ProductCategory;
 use Faker\Generator as Faker;

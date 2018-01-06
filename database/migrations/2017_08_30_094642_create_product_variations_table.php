@@ -16,6 +16,7 @@ class CreateProductVariationsTable extends Migration
         Schema::create('product_variations', function (Blueprint $table) {
             $table->increments('id');
 
+            $table->string('variation')->nullable();
             $table->decimal('size')->nullable();
             $table->string('metrics')->nullable();
 

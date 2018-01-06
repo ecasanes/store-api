@@ -16,22 +16,24 @@ class CreateTransactionsTable extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->string('or_no');
+            $table->string('or_no')->nullable();
             $table->integer('transaction_type_id')->unsigned()->nullable();
-            $table->integer('staff_id')->unsigned()->nullable();
-            $table->integer('customer_user_id')->unsigned()->nullable();
 
+            $table->integer('customer_user_id')->unsigned()->nullable();
             $table->string('customer_firstname')->nullable();
             $table->string('customer_lastname')->nullable();
             $table->string('customer_phone')->nullable();
 
-            $table->string('staff_firstname')->nullable();
-            $table->string('staff_lastname')->nullable();
-            $table->string('staff_phone')->nullable();
+            $table->integer('user_id')->unsinged()->nullable();
 
-            $table->integer('price_rule_id')->nullable();
+            $table->integer('store_id')->unsigned()->nullable();
 
-            $table->string('status')->nullable(); // VOID, ETC
+            $table->decimal('discount')->default(0);
+            $table->text('remarks')->nullable();
+
+            $table->decimal('grand_total')->default(0);
+
+            $table->string('status')->nullable()->default('active'); // VOID, ETC
 
             $table->softDeletes();
             $table->timestamps();

@@ -181,8 +181,8 @@ return [
         /*
          * Mercury Service Providers
          */
-        App\Mercury\ServiceProviders\BackendServiceProvider::class,
-        App\Mercury\ServiceProviders\RouteServiceProvider::class,
+        App\DTIStore\ServiceProviders\BackendServiceProvider::class,
+        App\DTIStore\ServiceProviders\RouteServiceProvider::class,
 
         /*
          * Third Party Service Providers

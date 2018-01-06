@@ -18,6 +18,7 @@ class CreateRolesTable extends Migration
 
             $table->string('name')->unique();
             $table->string('code')->unique();
+            $table->integer('has_permissions')->default(0);
 
             $table->string('status')->default('active');
 

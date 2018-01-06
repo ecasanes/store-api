@@ -76,5 +76,21 @@ class RolesTableSeeder extends Seeder
             'code' => 'company_coordinator',
             'status' => 'active'
         ]);
+
+        Role::firstOrCreate([
+            'id' => 9,
+            'name' => 'Buyer',
+            'rank' => 9,
+            'code' => 'buyer',
+            'status' => 'active'
+        ]);
+
+        Role::firstOrCreate([
+            'id' => 10,
+            'name' => 'Seller',
+            'rank' => 10,
+            'code' => 'seller',
+            'status' => 'active'
+        ]);
     }
 }

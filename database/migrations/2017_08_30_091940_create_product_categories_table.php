@@ -18,6 +18,7 @@ class CreateProductCategoriesTable extends Migration
 
             $table->string('name')->unique();
             $table->string('code')->unique();
+            $table->string('color')->nullable();
 
             $table->string('status')->default('active');
 

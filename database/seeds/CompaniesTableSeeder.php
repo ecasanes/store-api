@@ -15,13 +15,13 @@ class CompaniesTableSeeder extends Seeder
     public function run()
     {
         $company = Company::firstOrCreate([
-            'name' => 'Augustus',
+            'name' => 'MAIN Company',
             'default_metrics' => 'ml',
             'default_color' => 'red'
         ]);
 
         Branch::create([
-            'name' => 'Centrio Branch',
+            'name' => 'Online Store',
             'override_default_store_time' => 1,
             'default_start_time' => '10:00:00',
             'default_end_time' => '21:00:00',
@@ -29,13 +29,5 @@ class CompaniesTableSeeder extends Seeder
             'key' => 11111111
         ]);
 
-        Branch::create([
-            'name' => 'Limketkai Branch',
-            'override_default_store_time' => 1,
-            'default_start_time' => '10:00:00',
-            'default_end_time' => '20:00:00',
-            'company_id' => $company->id,
-            'key' => 22222222
-        ]);
     }
 }

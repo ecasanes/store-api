@@ -61,24 +61,24 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
 
-        //'cors' => \App\Mercury\Api\Middleware\Cors::class,
+        //'cors' => \App\DTIStore\Api\Middleware\Cors::class,
         'cors' => \Barryvdh\Cors\HandleCors::class,
         //'cors' => \Barryvdh\Cors\HandlePreflight::class,
 
-        'pos.post' => \App\Mercury\Api\Middleware\POSPostMiddleware::class,
-        'pos.view' => \App\Mercury\Api\Middleware\POSViewMiddleware::class,
-        'pos.public' => \App\Mercury\Api\Middleware\POSPublicMiddleware::class,
+        'pos.post' => \App\DTIStore\Api\Middleware\POSPostMiddleware::class,
+        'pos.view' => \App\DTIStore\Api\Middleware\POSViewMiddleware::class,
+        'pos.public' => \App\DTIStore\Api\Middleware\POSPublicMiddleware::class,
 
-        'auth.api' => \App\Mercury\Api\Middleware\ApiAuthMiddleware::class,
-        'auth.api.mobile' => \App\Mercury\Api\Middleware\MobileApiAuthMiddleware::class,
-        'auth.api.expired' => \App\Mercury\Api\Middleware\ApiRefreshTokenMiddleware::class,
-        'auth.jwt' => \App\Mercury\Api\Middleware\JWTAuthMiddleware::class,
+        'auth.api' => \App\DTIStore\Api\Middleware\ApiAuthMiddleware::class,
+        'auth.api.mobile' => \App\DTIStore\Api\Middleware\MobileApiAuthMiddleware::class,
+        'auth.api.expired' => \App\DTIStore\Api\Middleware\ApiRefreshTokenMiddleware::class,
+        'auth.jwt' => \App\DTIStore\Api\Middleware\JWTAuthMiddleware::class,
 
-        'admin' => \App\Mercury\Api\Middleware\AdminMiddleware::class,
-        'staff' => \App\Mercury\Api\Middleware\StaffMiddleware::class,
-        'company' => \App\Mercury\Api\Middleware\CompanyMiddleware::class,
-        'company.staff.inventory' => \App\Mercury\Api\Middleware\CompanyStaffInventoryMiddleware::class,
-        'company.staff.sale' => \App\Mercury\Api\Middleware\CompanyStaffSaleMiddleware::class,
+        'admin' => \App\DTIStore\Api\Middleware\AdminMiddleware::class,
+        'staff' => \App\DTIStore\Api\Middleware\StaffMiddleware::class,
+        'company' => \App\DTIStore\Api\Middleware\CompanyMiddleware::class,
+        'company.staff.inventory' => \App\DTIStore\Api\Middleware\CompanyStaffInventoryMiddleware::class,
+        'company.staff.sale' => \App\DTIStore\Api\Middleware\CompanyStaffSaleMiddleware::class,
 
     ];
 }

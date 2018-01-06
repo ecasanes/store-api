@@ -19,6 +19,7 @@ class CreateTransactionTypesTable extends Migration
             $table->string('name')->unique();
             $table->string('code')->unique();
             $table->text('description')->nullable();
+            $table->string('group')->nullable();
 
             $table->string('status')->default('active');
 

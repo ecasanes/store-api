@@ -23,8 +23,15 @@ class CreateTransactionItemsTable extends Migration
             $table->string('product_metrics')->nullable();
             $table->decimal('product_cost_price')->default(0);
             $table->decimal('product_selling_price')->default(0);
+            $table->decimal('product_discount')->nullable()->default(0);
 
             $table->string('status')->default('active');
+
+            $table->integer('transaction_id')->unsigned()->nullable();
+            $table->foreign('transaction_id')
+                ->references('id')
+                ->on('transactions')
+                ->onDelete('set null');
 
             $table->softDeletes();
             $table->timestamps();

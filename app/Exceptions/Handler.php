@@ -2,7 +2,7 @@
 
 namespace App\Exceptions;
 
-use App\Mercury\Helpers\Rest;
+use App\DTIStore\Helpers\Rest;
 use Exception;
 use Illuminate\Database\QueryException;
 use Response;
