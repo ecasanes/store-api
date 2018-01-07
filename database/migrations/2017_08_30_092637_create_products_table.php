@@ -17,7 +17,7 @@ class CreateProductsTable extends Migration
             $table->increments('id');
 
             $table->string('name')->unique();
-            $table->string('code')->unique();
+            $table->string('code')->nullable();
 
             $table->text('description')->nullable();
             $table->string('image_url')->nullable();
@@ -28,6 +28,12 @@ class CreateProductsTable extends Migration
             $table->foreign('product_category_id')
                 ->references('id')
                 ->on('product_categories')
+                ->onDelete('set null');
+
+            $table->integer('product_condition_id')->unsigned()->nullable();
+            $table->foreign('product_condition_id')
+                ->references('id')
+                ->on('product_conditions')
                 ->onDelete('set null');
 
             $table->softDeletes();

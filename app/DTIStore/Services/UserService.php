@@ -316,4 +316,11 @@ class UserService
         return $userStore;
     }
 
+    public function findStoreIdByUser($userId)
+    {
+        $storeId = $this->userStore->findStoreIdByUser($userId);
+
+        return $storeId;
+    }
+
 }

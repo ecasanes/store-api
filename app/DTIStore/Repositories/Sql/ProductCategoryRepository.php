@@ -56,13 +56,13 @@ class ProductCategoryRepository implements ProductCategoryInterface {
     {
         $searchQuery = "";
 
-        $order = 'DESC';
+        $order = 'ASC';
 
         if(isset($filter['order'])) {
             $order = $filter['order'];
         }
 
-        $orderSql = "ORDER BY product_categories.name {$order}";
+        $orderSql = "ORDER BY product_categories.id {$order}";
 
         if(isset($filter['q'])) {
             $query = $filter['q'];

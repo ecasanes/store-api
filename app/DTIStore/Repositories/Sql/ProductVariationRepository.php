@@ -17,6 +17,7 @@ class ProductVariationRepository implements ProductVariationInterface
 
         unset($data['token']);
         unset($data['product_variation_id']);
+        unset($data['quantity']);
 
         $variation = Variation::firstOrCreate($data);
 
@@ -143,7 +144,7 @@ class ProductVariationRepository implements ProductVariationInterface
             $product = Product::find($productId);
 
             // except image
-            unset($data['image_url']);
+            //unset($data['image_url']);
             $product->update($data);
 
 

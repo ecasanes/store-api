@@ -21,4 +21,6 @@ interface ProductVariationInterface
     public function isDeleted($id);
 
     public function getAllByProductId($id);
+
+    public function updateWithProductData($id, $data);
 }

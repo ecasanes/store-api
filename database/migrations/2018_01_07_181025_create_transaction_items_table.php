@@ -18,14 +18,13 @@ class CreateTransactionItemsTable extends Migration
 
             $table->integer('product_variation_id')->unsigned()->nullable();
             $table->decimal('quantity')->default(0);
-            $table->string('product_name')->nullable();
-            $table->decimal('product_size')->default(0);
-            $table->string('product_metrics')->nullable();
-            $table->decimal('product_cost_price')->default(0);
-            $table->decimal('product_selling_price')->default(0);
-            $table->decimal('product_discount')->nullable()->default(0);
 
-            $table->string('status')->default('active');
+            $table->string('product_name')->nullable();
+            $table->decimal('selling_price')->default(0);
+            $table->decimal('shipping_price')->default(0);
+
+            $table->string('buyer_status')->default('to_pay');
+            $table->string('seller_status')->default('to_ship');
 
             $table->integer('transaction_id')->unsigned()->nullable();
             $table->foreign('transaction_id')

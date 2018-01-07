@@ -4,13 +4,15 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class TransactionType extends Model
+class Voucher extends Model
 {
     protected $fillable = [
         'name',
         'code',
-        'group',
-        'description',
+        'start',
+        'end',
+        'discount_type',
+        'discount',
         'status',
         'deleted_at'
     ];

@@ -27,16 +27,4 @@ interface StoreStockInterface
     public function getBranchStocksByItemIds($branchId, array $itemIds);
 
     public function getBranchStocksById($branchId, array $filter);
-
-    public function getAlerts($filter, $threshold);
-
-    public function getAlertsByItemIds(array $itemIds, $threshold);
-
-    public function updateCurrentDeliveryQuantityByVariationId($branchId, $variationId);
-
-    public function subtractCurrentDeliveryQuantityByVariationId($branchId, $variationId, $deliveryQuantity);
-
-    public function addSoldItemCountByOne($branchId, $variationId);
-
-    public function subtractSoldItemCountByOne($branchId, $variationId);
 }

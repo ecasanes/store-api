@@ -58,4 +58,15 @@ class UserStoreRepository implements UserStoreInterface {
 
         return $updated;
     }
+
+    public function findStoreIdByUser($userId)
+    {
+        $userStore = UserStore::where('user_id', $userId)->first();
+
+        if(!$userStore){
+            return null;
+        }
+
+        return $userStore->store_id;
+    }
 }

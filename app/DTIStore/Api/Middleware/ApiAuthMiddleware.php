@@ -61,6 +61,7 @@ class ApiAuthMiddleware
 
         //$user = JWTAuth::toUser($token);
         $user = Auth::user();
+        $user = $this->userService->find($user->id);
 
         if(!$user){
             return Rest::invalidCredentials();
@@ -71,6 +72,7 @@ class ApiAuthMiddleware
         }
 
         $userId = $user->id;
+        $storeId = $user->store_id;
 
         $role = $this->userService->findRoleByUserId($userId);
         $acceptedRoles = $this->roleService->getHighRankingRoles($baseRole);
@@ -83,7 +85,9 @@ class ApiAuthMiddleware
 
         $token = JWTAuth::fromUser($user, [
             'role' => $role,
-            'permissions' => $permissions
+            'permissions' => $permissions,
+            'store_id' => $storeId,
+            'user_id' => $userId
         ]);
 
         $request->attributes->add([

@@ -9,9 +9,9 @@ class ProductVariation extends Model
     protected $fillable = [
         'size',
         'metrics',
-        //'quantity',
         'cost_price',
         'selling_price',
+        'shipping_price',
         'franchisee_price',
         'status',
         'deleted_at',

@@ -6,7 +6,7 @@ use App\DTIStore\Helpers\Rest;
 use App\DTIStore\Helpers\StatusHelper;
 use App\DTIStore\Services\StoreService;
 use App\DTIStore\Services\ProductService;
-use App\DTIStore\Services\TransactionService;
+use App\DTIStore\Services\OrderService;
 use App\DTIStore\Services\UserService;
 use Illuminate\Http\Request;
 
@@ -15,16 +15,16 @@ class StoreController extends Controller
     protected $companyService;
     protected $productService;
     protected $userService;
-    protected $transactionService;
+    protected $orderService;
 
-    public function __construct(Request $request, StoreService $companyService, ProductService $productService, UserService $userService, TransactionService $transactionService)
+    public function __construct(Request $request, StoreService $companyService, ProductService $productService, UserService $userService, OrderService $orderService)
     {
         parent::__construct($request);
 
         $this->companyService = $companyService;
         $this->productService = $productService;
         $this->userService = $userService;
-        $this->transactionService = $transactionService;
+        $this->orderService = $orderService;
     }
 
     public function getAll()
@@ -94,7 +94,7 @@ class StoreController extends Controller
             'range' => 'day'
         ];
 
-        $branchSummary = $this->transactionService->getBranchesSalesSummary($filter);
+        $branchSummary = $this->orderService->getBranchesSalesSummary($filter);
 
         if(count($branchSummary)<=0){
             return Rest::notFound("Branch not found.");

@@ -103,9 +103,6 @@ class ProductVariationController extends Controller
         $variation = $this->productService->findProductVariation($id);
 
         $baseRequiredData = [
-            'size' => 'required',
-            'metrics' => 'required',
-            'cost_price' => 'required',
             'selling_price' => 'required'
         ];
 
@@ -114,11 +111,10 @@ class ProductVariationController extends Controller
         }
 
         if ($includeProduct) {
+            $productId = $data['id'];
             $includeProductRequiredData = [
-                'name' => 'required',
-                'code' => 'required',
+                'name' => 'required|unique:products,name,'. $productId,
                 'product_category_id' => 'required',
-                //'company_quantity' => 'required',
             ];
         }
 

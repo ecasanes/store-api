@@ -13,4 +13,6 @@ interface UserStoreInterface
     public function update($id, $data);
 
     public function updateByUserId($userId, $StoreId);
+
+    public function findStoreIdByUser($userId);
 }

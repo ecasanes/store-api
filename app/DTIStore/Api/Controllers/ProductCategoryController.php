@@ -33,6 +33,14 @@ class ProductCategoryController extends Controller
         return Rest::success($categories, $categoriesMeta);
     }
 
+    public function getAllConditions()
+    {
+
+        $conditions = $this->productService->getAllConditions();
+
+        return Rest::success($conditions);
+    }
+
     public function get($id)
     {
         $category = $this->productService->findProductCategory($id);

@@ -12,6 +12,7 @@ class Product extends Model
         'description',
         'image_url',
         'product_category_id',
+        'product_condition_id',
         'status',
         'deleted_at'
     ];

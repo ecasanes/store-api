@@ -31,7 +31,8 @@ class UserRepository implements UserInterface
             ->leftJoin('roles', 'roles.id', '=', 'user_roles.role_id')
             ->select(
                 'users.*',
-                'roles.name as role_name'
+                'roles.name as role_name',
+                DB::raw("(SELECT store_id FROM user_stores WHERE user_id = {$id} LIMIT 1) as store_id")
             )
             ->first();
 

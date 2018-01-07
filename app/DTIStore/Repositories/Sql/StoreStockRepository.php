@@ -24,7 +24,7 @@ class StoreStockRepository implements StoreStockInterface
 
     public function findByBranchVariationId($branchId, $variationId)
     {
-        $branchStock = StoreStock::where('branch_id', $branchId)
+        $branchStock = StoreStock::where('store_id', $branchId)
             ->where('product_variation_id', $variationId)
             ->first();
 
@@ -115,7 +115,7 @@ class StoreStockRepository implements StoreStockInterface
 
             if (!$branchStock) {
                 $branchStock = $this->create([
-                    'branch_id' => $branchId,
+                    'store_id' => $branchId,
                     'product_variation_id' => $variationId,
                     'quantity' => $quantity
                 ]);
@@ -139,7 +139,7 @@ class StoreStockRepository implements StoreStockInterface
 
             if (!$branchStock) {
                 $branchStock = $this->create([
-                    'branch_id' => $branchId,
+                    'store_id' => $branchId,
                     'product_variation_id' => $variationId,
                     'quantity' => $quantity
                 ]);
@@ -158,7 +158,7 @@ class StoreStockRepository implements StoreStockInterface
 
     public function getBranchStocksByItemIds($branchId, array $itemIds)
     {
-        $branchStocks = StoreStock::where('branch_id', $branchId)
+        $branchStocks = StoreStock::where('store_id', $branchId)
             ->whereIn('product_variation_id', $itemIds)
             ->get();
 
@@ -197,7 +197,7 @@ class StoreStockRepository implements StoreStockInterface
         $sql = "SELECT 
                 branch_stocks_query.id,
                 branch_stocks_query.product_name,
-                branch_stocks_query.branch_id,
+                branch_stocks_query.store_id,
                 branch_stocks_query.name,
                 branch_stocks_query.code,
                 branch_stocks_query.image_url,
@@ -248,7 +248,7 @@ class StoreStockRepository implements StoreStockInterface
                   product_variations.`size`,
                   product_variations.`status`,
                   product_variations.`product_id`,
-                  branch_stocks.`branch_id`,
+                  branch_stocks.`store_id`,
                   branch_stocks.`created_at`,
                   branch_stocks.`quantity` AS branch_quantity,
                   company_stocks.`quantity` AS company_quantity,
@@ -264,7 +264,7 @@ class StoreStockRepository implements StoreStockInterface
                       ON transaction_types.id = transactions.`transaction_type_id` 
                   WHERE transactions.status = 'active' 
                     AND transaction_types.`code` = 'sale' 
-                    AND transactions.`branch_id` = branch_stocks.`branch_id` 
+                    AND transactions.`store_id` = branch_stocks.`store_id` 
                     AND transaction_items.`product_variation_id` = branch_stocks.`product_variation_id` 
                     {$transactionDateFilter}) AS sale_item_count,
                     (SELECT 
@@ -277,7 +277,7 @@ class StoreStockRepository implements StoreStockInterface
                           ON transaction_types.id = transactions.`transaction_type_id` 
                       WHERE transactions.status = 'active' 
                         AND transaction_types.`code` = 'return_sale' 
-                        AND transactions.`branch_id` = branch_stocks.`branch_id` 
+                        AND transactions.`store_id` = branch_stocks.`store_id` 
                         AND transaction_items.`product_variation_id` = branch_stocks.`product_variation_id`) AS return_sale_item_count,
                   
                   (SELECT delivery_items.`quantity` 
@@ -304,10 +304,10 @@ class StoreStockRepository implements StoreStockInterface
                     ON product_categories.`id` = products.`product_category_id` 
                   INNER JOIN company_stocks 
                     ON company_stocks.`product_variation_id` = branch_stocks.`product_variation_id` 
-                WHERE branch_id = {$branchId} 
+                WHERE store_id = {$branchId} 
                   AND product_variations.status = '{$activeFlag}') as branch_stocks_query
                    
-                  WHERE branch_stocks_query.branch_id IS NOT NULL 
+                  WHERE branch_stocks_query.store_id IS NOT NULL 
                   {$additionalFilters}
                   {$querySql}";
 //        dd($sql);
@@ -316,203 +316,15 @@ class StoreStockRepository implements StoreStockInterface
         return $branchStocks;
     }
 
-    public function getAlerts($filter, $threshold)
-    {
-        $inventoryStatusLow = StatusHelper::INVENTORY_STATUS_LOW;
-        $inventoryStatusSoldOut = StatusHelper::INVENTORY_STATUS_SOLD_OUT;
-
-        if ($threshold <= 0) {
-            $threshold = env('DEFAULT_LOW_THRESHOLD', StatusHelper::DEFAULT_LOW_THRESHOLD);
-        }
-
-        $sql = "SELECT 
-                  branch_stocks.*,
-                  products.name as product_name,
-                  product_variations.size,
-                  product_variations.metrics,
-                  branches.name as branch_name,
-                  branches.address,
-                  CASE 
-                    WHEN branch_stocks.quantity = 0
-                      THEN 'Sold Out'
-                    ELSE 'Low Inventory'
-                  END as inventory_status,
-                  CASE 
-                    WHEN branch_stocks.quantity = 0
-                      THEN '{$inventoryStatusSoldOut}'
-                    ELSE '{$inventoryStatusLow}'
-                  END as inventory_status_code
-                FROM 
-                  branch_stocks
-                INNER JOIN branches ON branches.id = branch_stocks.branch_id
-                INNER JOIN product_variations ON product_variations.id = branch_stocks.product_variation_id
-                INNER JOIN products ON products.id = product_variations.product_id
-                WHERE branch_stocks.quantity <= {$threshold}";
-
-        if (isset($filter['branch_id'])) {
-            $branchId = $filter['branch_id'];
-            $sql .= " AND branch_stocks.branch_id = {$branchId} ";
-        }
-
-        $stocks = DB::select($sql);
-
-        return $stocks;
-    }
-
-    public function getAlertsByItemIds(array $itemIds, $threshold)
-    {
-        $inventoryStatusLow = StatusHelper::INVENTORY_STATUS_LOW;
-        $inventoryStatusSoldOut = StatusHelper::INVENTORY_STATUS_SOLD_OUT;
-
-        if ($threshold <= 0) {
-            $threshold = env('DEFAULT_LOW_THRESHOLD', StatusHelper::DEFAULT_LOW_THRESHOLD);
-        }
-
-        $stocks = StoreStock::where('branch_stocks.id','!=',null)
-            ->join('branches','branches.id','=','branch_stocks.branch_id')
-            ->join('product_variations','product_variations.id','=','branch_stocks.product_variation_id')
-            ->join('products','products.id','=','product_variations.id')
-            ->select(
-                'branch_stocks.*',
-                'products.name as product_name',
-                'product_variations.size',
-                'product_variations.metrics',
-                'branches.name as branch_name',
-                'branches.address',
-                DB::raw("CASE 
-                    WHEN branch_stocks.quantity = 0
-                      THEN 'Sold Out'
-                    ELSE 'Low Inventory'
-                  END as inventory_status"),
-                DB::raw("CASE 
-                    WHEN branch_stocks.quantity = 0
-                      THEN '{$inventoryStatusSoldOut}'
-                    ELSE '{$inventoryStatusLow}'
-                  END as inventory_status_code")
-            )
-            ->where('branch_stocks.quantity','<=',$threshold)
-            ->whereIn('branch_stocks.product_variation_id', $itemIds)
-            ->get();
-
-        return $stocks;
-    }
-
-    public function updateCurrentDeliveryQuantityByVariationId($branchId, $variationId)
-    {
-        return DB::transaction(function () use ($variationId, $branchId) {
-
-            $branchStock = $this->findByBranchVariationId($branchId, $variationId);
-
-            if (!$branchStock) {
-                $branchStock = $this->create([
-                    'branch_id' => $branchId,
-                    'product_variation_id' => $variationId,
-                    'current_delivery_quantity' => 0
-                ]);
-
-                return true;
-            }
-
-            $currentStocks = $branchStock->quantity;
-
-            $updated = $branchStock->update([
-                'current_delivery_quantity' => $currentStocks
-            ]);
-
-            return $updated;
-        });
-    }
-
-    public function subtractCurrentDeliveryQuantityByVariationId($branchId, $variationId, $deliveryQuantity)
-    {
-        return DB::transaction(function () use ($deliveryQuantity, $variationId, $branchId) {
-
-            $branchStock = $this->findByBranchVariationId($branchId, $variationId);
-
-            if (!$branchStock) {
-                $branchStock = $this->create([
-                    'branch_id' => $branchId,
-                    'product_variation_id' => $variationId,
-                    'current_delivery_quantity' => 0
-                ]);
-
-                return true;
-            }
-
-            $currentDeliveryQuantity = $branchStock->current_delivery_quantity;
-            $newDeliveryQuantity = $currentDeliveryQuantity - $deliveryQuantity;
-
-            $updated = $branchStock->update([
-                'current_delivery_quantity' => $newDeliveryQuantity
-            ]);
-
-            return $updated;
-        });
-    }
-
-    public function addSoldItemCountByOne($branchId, $variationId)
-    {
-        return DB::transaction(function () use ($variationId, $branchId) {
-
-            $branchStock = $this->findByBranchVariationId($branchId, $variationId);
-
-            if (!$branchStock) {
-                $branchStock = $this->create([
-                    'branch_id' => $branchId,
-                    'product_variation_id' => $variationId,
-                    'sold_items' => 1
-                ]);
-
-                return true;
-            }
-
-            $currentSoldItems = $branchStock->sold_items;
-            $newSoldItems = $currentSoldItems+1;
-
-            $updated = $branchStock->update([
-                'sold_items' => $newSoldItems
-            ]);
-
-            return $updated;
-        });
-    }
-
-    public function subtractSoldItemCountByOne($branchId, $variationId)
-    {
-        return DB::transaction(function () use ($variationId, $branchId) {
-
-            $branchStock = $this->findByBranchVariationId($branchId, $variationId);
-
-            if (!$branchStock) {
-                $branchStock = $this->create([
-                    'branch_id' => $branchId,
-                    'product_variation_id' => $variationId,
-                    'sold_items' => 0
-                ]);
-
-                return true;
-            }
-
-            $currentSoldItems = $branchStock->sold_items;
-            $newSoldItems = $currentSoldItems-1;
-
-            $updated = $branchStock->update([
-                'sold_items' => $newSoldItems
-            ]);
-
-            return $updated;
-        });
-    }
-
     public function getAdditionalFilters($filters)
     {
         $sortFilter = "";
         $orderFilter = "DESC";
         $branchIdFilter = "";
 
-        if(isset($filters['branch_id']) && $filters['branch_id'] != 0) {
-            $branchId = $filters['branch_id'];
-            $branchIdFilter = "AND branch_stocks_query.branch_id = {$branchId}";
+        if(isset($filters['store_id']) && $filters['store_id'] != 0) {
+            $branchId = $filters['store_id'];
+            $branchIdFilter = "AND branch_stocks_query.store_id = {$branchId}";
         }
         if(isset($filters['order'])) {
             $orderFilter = $filters['order'];

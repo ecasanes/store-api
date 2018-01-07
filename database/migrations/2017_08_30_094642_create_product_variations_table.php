@@ -20,9 +20,9 @@ class CreateProductVariationsTable extends Migration
             $table->decimal('size')->nullable();
             $table->string('metrics')->nullable();
 
-            $table->decimal('quantity')->default(0);
-            $table->decimal('cost_price')->default(0);
+            $table->decimal('cost_price')->default(0)->nullable();
             $table->decimal('selling_price')->default(0);
+            $table->decimal('shipping_price')->default(0);
 
             $table->string('status')->default('active');
 

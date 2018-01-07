@@ -4,13 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class StoreStock extends Model
+class UserCart extends Model
 {
     protected $fillable = [
-        'quantity',
-        'store_id',
-        'current_delivery_quantity',
+        'user_id',
         'product_variation_id',
+        'cart_quantity',
         'deleted_at'
     ];
 }

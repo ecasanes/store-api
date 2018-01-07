@@ -45,7 +45,9 @@ class BackendServiceProvider extends ServiceProvider
 
             'TransactionType',
             'Transaction',
-            'TransactionItem'
+            'TransactionItem',
+
+            'Order',
 
         ];
 

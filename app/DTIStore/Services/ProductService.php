@@ -2,63 +2,47 @@
 
 use App\DTIStore\Helpers\StatusHelper;
 use App\DTIStore\Repositories\StoreStockInterface;
-use App\DTIStore\Repositories\CompanyStockInterface;
-use App\DTIStore\Repositories\DeliveryInterface;
-use App\DTIStore\Repositories\DeliveryItemInterface;
-use App\DTIStore\Repositories\PriceRuleInterface;
 use App\DTIStore\Repositories\ProductInterface;
 use App\DTIStore\Repositories\ProductCategoryInterface;
 use App\DTIStore\Repositories\ProductVariationInterface;
 use App\DTIStore\Repositories\TransactionInterface;
 use App\DTIStore\Repositories\TransactionTypeInterface;
-use App\DTIStore\Services\Traits\Product\BranchStockTrait;
+use App\DTIStore\Services\Traits\Product\StoreStockTrait;
 use App\DTIStore\Services\Traits\Product\CompanyStockTrait;
 use App\DTIStore\Services\Traits\Product\DeliveryTrait;
 use App\DTIStore\Services\Traits\Product\ProductCategoryTrait;
 use App\DTIStore\Services\Traits\Product\ProductVariationTrait;
-use App\DTIStore\Services\Traits\Transaction\SaleTransactionTrait;
+use App\ProductCondition;
 
 class ProductService
 {
     protected $product;
     protected $category;
     protected $variation;
-    protected $companyStock;
     protected $branchStock;
     protected $transaction;
-    protected $delivery;
-    protected $deliveryItem;
-    protected $priceRule;
     protected $transactionType;
 
     use ProductCategoryTrait;
     use ProductVariationTrait;
     use CompanyStockTrait;
-    use BranchStockTrait;
+    use StoreStockTrait;
     use DeliveryTrait;
 
     public function __construct(
         ProductInterface $product,
         ProductCategoryInterface $category,
         ProductVariationInterface $variation,
-        CompanyStockInterface $companyStock,
         StoreStockInterface $branchStock,
         TransactionInterface $transaction,
-        DeliveryInterface $delivery,
-        DeliveryItemInterface $deliveryItem,
-        PriceRuleInterface $priceRule,
         TransactionTypeInterface $transactionType
     )
     {
         $this->product = $product;
         $this->category = $category;
         $this->variation = $variation;
-        $this->companyStock = $companyStock;
         $this->branchStock = $branchStock;
         $this->transaction = $transaction;
-        $this->delivery = $delivery;
-        $this->deliveryItem = $deliveryItem;
-        $this->priceRule = $priceRule;
         $this->transactionType = $transactionType;
     }
 
@@ -130,154 +114,111 @@ class ProductService
         return $updated;
     }
 
-    public function hasEnoughStocksByValidation($itemValidations)
+    public function getAllConditions()
     {
-
-        foreach($itemValidations as $itemValidation){
-            $isValid = $itemValidation['valid'];
-            if(!$isValid){
-                return false;
-            }
-        }
-
-        return true;
+        return ProductCondition::all();
     }
 
-    public function hasNoZeroValueStocksValidation($items)
+    public function addToCart($productVariationId, $userId, $quantity)
     {
-
-        $itemValidations = [];
-
-        foreach($items as $delivery){
-
-            $isValid = false;
-
-            $quantity = $delivery['quantity'];
-
-            if($quantity>0){
-                $isValid = true;
-            }
-
-            $delivery['valid'] = $isValid;
-
-            $itemValidations[] = $delivery;
-        }
-
-        return $itemValidations;
+        return $this->product->addToCart($productVariationId, $userId, $quantity);
     }
 
-    public function hasAtLeastOneZeroValueStocksValidation($items)
+    public function removeInCart($productVariationId, $userId)
     {
-
-        foreach($items as $delivery){
-
-            $quantity = $delivery['quantity'];
-
-            if($quantity>0){
-                return true;
-            }
-        }
-
-        return false;
-
+        return $this->product->removeInCart($productVariationId, $userId);
     }
 
-    public function getByTransactionId($transactionId, $data)
+    public function addToWishlist($productVariationId, $userId)
     {
-        $products = $this->product->getByTransactionId($transactionId, $data);
-
-        return $products;
+        return $this->product->addToWishlist($productVariationId, $userId);
     }
 
-    public function getByTransactionIdMeta($transactionId, $data)
+    public function removeInWishlist($productVariationId, $userId)
     {
-        $meta = $this->product->getByTransactionIdMeta($transactionId, $data);
-
-        return $meta;
+        return $this->product->removeInWishlist($productVariationId, $userId);
     }
 
-    public function filterProductCategories(array $filter)
+    public function getCartCountByUser($userId)
     {
-        $categories = $this->category->filter($filter);
-
-        return $categories;
+        return $this->product->getCartCountByUser($userId);
     }
 
-    public function getProductCategoryMeta($data)
+    public function getAllPaymentMethods()
     {
-        $meta = $this->category->getFilterMeta($data);
-
-        return $meta;
+        return $this->product->getAllPaymentMethods();
     }
 
-    public function getAlerts($filter, $threshold = StatusHelper::DEFAULT_LOW_THRESHOLD)
+    public function getAllVouchers()
     {
-        $alerts = $this->branchStock->getAlerts($filter, $threshold);
-
-        return $alerts;
+        return $this->product->getAllVouchers();
     }
 
-    public function getAlertsByItems($items, $threshold = StatusHelper::DEFAULT_LOW_THRESHOLD)
+    public function createVoucher($data)
     {
-        $itemIds = [];
+        return $this->product->createVoucher($data);
+    }
 
-        foreach($items as $item){
+    public function updateVoucher($id, $data)
+    {
+        return $this->product->updateVoucher($id, $data);
+    }
 
-            $productVariationId = $item['product_variation_id'];
-            $itemIds[] = $productVariationId;
+    public function deleteVoucher($id)
+    {
+        return $this->product->deleteVoucher($id);
+    }
+
+    public function removeInCartByProducts($buyerUserId, $products)
+    {
+
+        foreach($products as $product) {
+
+            $productVariationId = $product['product_variation_id'];
+            $this->removeInCart($productVariationId, $buyerUserId);
 
         }
 
-        $alerts = $this->branchStock->getAlertsByItemIds($itemIds, $threshold);
-
-        return $alerts;
     }
 
-    public function getPriceRulesByType($ruleType)
+    public function subtractStoreStocksByProducts($products)
     {
-        $ruleTypes = $this->priceRule->getPriceRulesByType($ruleType);
 
-        return $ruleTypes;
-    }
+        foreach($products as $product){
 
-    public function getAllPriceRules()
-    {
-        $priceRules = $this->priceRule->getAll();
+            $storeId = $product['store_id'];
+            $productVariationId = $product['product_variation_id'];
+            $quantity = $product['quantity'];
 
-        return $priceRules;
-    }
+            $this->subtractStoreStock($storeId, $productVariationId, $quantity);
 
-    public function updateBranchStocksByTransactionDetails($branchId, $transactionTypeId, $transactionItems)
-    {
-        $transactionType = $this->transactionType->find($transactionTypeId);
-
-        if(!$transactionType){
-            return false;
         }
 
-        $code = $transactionType->code;
+    }
 
-        switch($code){
-            case StatusHelper::SALE:
-                $this->subtractBranchStocks($branchId, $transactionItems);
-                $this->addSoldItemsCount($branchId, $transactionItems);
-                break;
-            case StatusHelper::VOID_SALE:
-                $this->addBranchStocks($branchId, $transactionItems);
-                $this->subtractSoldItemsCount($branchId, $transactionItems);
-                break;
-            case StatusHelper::RETURN_SALE:
-                $this->addBranchStocks($branchId, $transactionItems);
-                $this->subtractSoldItemsCount($branchId, $transactionItems);
-                break;
-            case StatusHelper::VOID_RETURN:
-                $this->subtractBranchStocks($branchId, $transactionItems);
-                $this->addSoldItemsCount($branchId, $transactionItems);
-                break;
+    public function calculateTotalByProducts($products)
+    {
+        $total = 0;
+
+        foreach($products as $product){
+
+            $sellingPrice = $product['selling_price'];
+            $shippingPrice = $product['shipping_price'];
+            $quantity = $product['quantity'];
+
+            $total += ($sellingPrice*$quantity)+($shippingPrice*$quantity);
+
         }
 
-        return true;
+        return $total;
 
+    }
+
+    public function findPaymentModeById($paymentModeId)
+    {
+        $paymentMode = $this->product->findPaymentModeById($paymentModeId);
+
+        return $paymentMode;
     }
 
 }
