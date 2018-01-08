@@ -136,7 +136,17 @@ class OrderController extends Controller
 
     }
 
-    public function getAllBuyersOrderHistory()
+    public function getAllOrderHistory()
+    {
+        $payload = $this->payload;
+        $filter = $payload->all();
+
+        $orderHistory = $this->orderService->getOrderTransactions($filter);
+
+        return Rest::success($orderHistory);
+    }
+
+    public function getCurrentBuyerOrderHistory()
     {
         $payload = $this->payload;
         $filter = $payload->all();
@@ -144,9 +154,64 @@ class OrderController extends Controller
         $userId = $this->user->id;
         $filter['buyer_user_id'] = $userId;
 
-        $orderHistory = $this->orderService->getAllBuyersOrderHistory($filter);
+        $orderHistory = $this->orderService->getOrderTransactions($filter);
 
         return Rest::success($orderHistory);
+    }
+
+    public function getCurrentSellerOrderHistory()
+    {
+        $payload = $this->payload;
+        $filter = $payload->all();
+
+        $userId = $this->user->id;
+        $filter['seller_user_id'] = $userId;
+
+        $orderHistory = $this->orderService->getOrderTransactions($filter);
+
+        return Rest::success($orderHistory);
+    }
+
+    public function receiveTransactionById($transactionId)
+    {
+        $transaction = $this->orderService->findTransaction($transactionId);
+
+        if(!$transaction){
+            return Rest::notFound("Transaction not found");
+        }
+
+        $updated = $this->orderService->updateTransaction($transactionId, [
+            'buyer_status' => 'received',
+            'seller_status' => 'delivered'
+        ]);
+
+        if(!$updated){
+            return Rest::failed("Something went wrong while updating transaction");
+        }
+
+        return Rest::success($updated);
+
+    }
+
+    public function shipTransactionById($transactionId)
+    {
+        $transaction = $this->orderService->findTransaction($transactionId);
+
+        if(!$transaction){
+            return Rest::notFound("Transaction not found");
+        }
+
+        $updated = $this->orderService->updateTransaction($transactionId, [
+            'tracking_no' => $this->orderService->generateTrackingNo(),
+            'seller_status' => 'shipped'
+        ]);
+
+        if(!$updated){
+            return Rest::failed("Something went wrong while updating transaction");
+        }
+
+        return Rest::success($updated);
+
     }
 
 

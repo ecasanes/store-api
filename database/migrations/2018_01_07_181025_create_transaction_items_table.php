@@ -23,9 +23,6 @@ class CreateTransactionItemsTable extends Migration
             $table->decimal('selling_price')->default(0);
             $table->decimal('shipping_price')->default(0);
 
-            $table->string('buyer_status')->default('to_pay');
-            $table->string('seller_status')->default('to_ship');
-
             $table->integer('transaction_id')->unsigned()->nullable();
             $table->foreign('transaction_id')
                 ->references('id')

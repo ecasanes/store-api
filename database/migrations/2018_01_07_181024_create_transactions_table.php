@@ -16,6 +16,8 @@ class CreateTransactionsTable extends Migration
         Schema::create('transactions', function (Blueprint $table) {
             $table->increments('id');
 
+            $table->string('tracking_no')->nullable();
+
             $table->integer('store_id')->unsigned()->nullable();
             $table->decimal('total')->default(0);
 

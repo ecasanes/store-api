@@ -16,9 +16,6 @@ class TransactionItem extends Model
         'selling_price',
         'shipping_price',
 
-        'buyer_status',
-        'seller_status',
-
         'deleted_at'
 
     ];

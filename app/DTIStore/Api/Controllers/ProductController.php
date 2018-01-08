@@ -106,12 +106,6 @@ class ProductController extends Controller
         $variations = $data['variations'];
         $variations = $this->productService->createProductVariations($productId, $variations);
 
-        $valid = $this->productService->hasEnoughStocksByValidation($variations);
-
-        if (!$valid) {
-            return Rest::failed("Something went wrong while inserting product variations");
-        }
-
         $user = $this->user;
 
         if($user){

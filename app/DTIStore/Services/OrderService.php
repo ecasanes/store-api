@@ -134,8 +134,7 @@ class OrderService
                     'product_name' => $product['name'],
                     'selling_price' => $sellingPrice,
                     'shipping_price' => $shippingPrice,
-                    'transaction_id' => $transaction->id,
-                    'buyer_status' => $buyerStatus
+                    'transaction_id' => $transaction->id
                 ]);
 
                 $total += ($sellingPrice*$quantity)+($shippingPrice*$quantity);
@@ -160,9 +159,11 @@ class OrderService
 
     }
 
-    public function updateTransaction()
+    public function updateTransaction($transactionId, $data)
     {
+        $updated = $this->transaction->update($transactionId, $data);
 
+        return $updated;
     }
 
     public function deleteTransaction()
@@ -185,33 +186,41 @@ class OrderService
 
     }
 
-    public function getAllBuyersOrderHistory($filter)
+    public function getOrderTransactions($filter)
     {
-        $code = null;
 
-        if(isset($filter['code'])){
-            $code = $filter['code'];
-        }
-
-        switch($code){
-            case 'to_pay':
-                $filter['buyer_status'] = 'to_pay';
-                break;
-            case 'paid':
-                $filter['buyer_status'] = 'paid';
-                break;
-            case 'shipped':
-                $filter['seller_status'] = 'shipped';
-                break;
-            case 'completed':
-                $filter['buyer_status'] = 'received';
-                $filter['seller_status'] = 'delivered';
-                break;
-        }
-
-        $orders = $this->order->getAllBuyersOrderHistory($filter);
+        $orders = $this->order->getOrderTransactions($filter);
 
         return $orders;
+    }
+
+    public function findTransaction($transactionId)
+    {
+        $transaction = $this->transaction->find($transactionId);
+
+        return $transaction;
+    }
+
+    public function generateTrackingNo()
+    {
+        $trackingNo = null;
+        $notUnique = true;
+
+        while($notUnique){
+
+            $trackingNo = rand(10000000, 99999999);
+
+            $transaction = $this->transaction->findByTrackingNo($trackingNo);
+
+            if($transaction){
+                continue;
+            }
+
+            $notUnique = false;
+
+        }
+
+        return $trackingNo;
     }
 
 }

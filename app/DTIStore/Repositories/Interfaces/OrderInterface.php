@@ -16,5 +16,5 @@ interface OrderInterface
 
     public function isDeleted($id);
 
-    public function getAllBuyersOrderHistory($filter);
+    public function getOrderTransactions($filter);
 }

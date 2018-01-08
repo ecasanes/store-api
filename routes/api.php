@@ -217,13 +217,22 @@ Route::group(['prefix' => 'products', 'middleware' => 'auth.jwt'], function () u
 Route::group(['prefix' => 'orders', 'middleware' => ['auth.jwt']], function () use ($orders) {
 
     // GET - api/orders
-    Route::get('', $orders . '@getAll');
+    Route::get('', $orders . '@getAllOrderHistory');
 
-    // GET - api/orders/buyers
-    Route::get('buyers', $orders . '@getAllBuyersOrderHistory');
+    // GET - api/orders/buyers/current
+    Route::get('buyers/current', $orders . '@getCurrentBuyerOrderHistory');
+
+    // GET - api/orders/sellers/current
+    Route::get('sellers/current', $orders . '@getCurrentSellerOrderHistory');
 
     // POST - api/orders
     Route::post('', $orders . '@create');
+
+    // PUT - api/orders/transactions/{id}/receive
+    Route::put('transactions/{id}/receive', $orders . '@receiveTransactionById');
+
+    // PUT - api/orders/transactions/{id}/ship
+    Route::put('transactions/{id}/ship', $orders . '@shipTransactionById');
 
 });
 
