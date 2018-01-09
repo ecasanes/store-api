@@ -77,7 +77,7 @@ class OrderService
 
     }
 
-    public function createTransactionsByProducts($orderId, $products, $paymentModeId = null)
+    public function createTransactionsByProducts($orderId, $products, $paymentModeId = null, $discount = 0)
     {
         $paymentMode = $this->product->findPaymentModeById($paymentModeId);
         $paymentModeCode = null;
@@ -110,6 +110,8 @@ class OrderService
 
         }
 
+        $storeCount = count($productsByStores);
+
         foreach($productsByStores as $storeId => $storeProducts){
 
             $total = 0;
@@ -138,6 +140,11 @@ class OrderService
                 ]);
 
                 $total += ($sellingPrice*$quantity)+($shippingPrice*$quantity);
+
+                if($discount>0){
+                    $total = $total - ($discount/$storeCount);
+                }
+
 
                 $createdRows['transaction_items'][] = $transactionItem;
 

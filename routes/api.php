@@ -70,9 +70,6 @@ Route::group(['prefix' => 'auth'], function () use ($users) {
 
 Route::group(['prefix' => 'products', 'middleware' => 'auth.jwt'], function () use ($orders, $categories, $variations, $products) {
 
-    // GET - api/products
-    Route::get('', $products . '@getAll');
-
     // POST - api/products
     Route::post('', $products . '@create');
 
@@ -194,6 +191,9 @@ Route::group(['prefix' => 'products', 'middleware' => 'auth.jwt'], function () u
         // GET - api/products/vouchers
         Route::get('', $products . '@getAllVouchers');
 
+        // GET - api/products/vouchers/validate
+        Route::get('validate', $products . '@validateVoucherByCode');
+
         // POST - api/products/vouchers
         Route::post('', $products . '@createVoucher');
 
@@ -309,4 +309,7 @@ Route::group(['prefix' => 'users', 'middleware' => 'auth.jwt'], function () use 
 
 // POST - api/buyers/new
 Route::post('buyers/new', $users . '@create');
+
+// GET - api/products
+Route::get('products', $products . '@getAll');
 

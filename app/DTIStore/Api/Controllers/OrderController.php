@@ -71,7 +71,38 @@ class OrderController extends Controller
 
         $paymentModeId = $data['payment_mode_id'];
 
-        $total = $this->productService->calculateTotalByProducts($products);
+        $voucherCode = null;
+        if(isset($data['voucher'])){
+            $voucherCode = $data['voucher'];
+        }
+
+        $voucher = $this->productService->validateVoucherByCode($voucherCode);
+
+        $total = $this->productService->calculateTotalByProducts($products, $voucherCode);
+
+        if($voucher){
+
+            $voucherId = $voucher->id;
+            $voucherDiscoutType = $voucher->discount_type;
+            $voucherDiscount = $voucher->discount;
+
+            $data['voucher_id'] = $voucherId;
+            $data['voucher_code'] = $voucherCode;
+            $data['discount_type'] = $voucherDiscoutType;
+            $data['discount'] = $voucherDiscount;
+
+            if($voucherDiscoutType == 'percent'){
+                $percentOff = $total*$voucherDiscount;
+                $total = $total - $percentOff;
+                $discount = $percentOff;
+            }
+
+            if($voucherDiscoutType == 'fixed'){
+                $total = $total - $voucherDiscount;
+                $discount = $voucherDiscount;
+            }
+        }
+
         $data['total'] = $total;
 
         $order = $this->orderService->create($data);
@@ -82,7 +113,7 @@ class OrderController extends Controller
 
         $orderId = $order->id;
 
-        $createdRows = $this->orderService->createTransactionsByProducts($orderId, $products, $paymentModeId);
+        $createdRows = $this->orderService->createTransactionsByProducts($orderId, $products, $paymentModeId, $discount);
 
         $buyerUserId = $data['buyer_user_id'];
 

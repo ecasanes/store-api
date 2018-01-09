@@ -216,7 +216,9 @@ class ProductRepository implements ProductInterface
                     ON user_stores.store_id = store_stocks.store_id
                   LEFT JOIN users
                     ON users.id = user_stores.user_id
-                WHERE products.status = '{$activeFlag}' AND product_variations.status = '{$activeFlag}'
+                WHERE products.status = '{$activeFlag}' 
+                AND product_variations.status = '{$activeFlag}'
+                AND users.status != 'deleted'
                 {$additionalSqlFilters} 
                 {$paginationSql} ";
 
@@ -579,4 +581,12 @@ class ProductRepository implements ProductInterface
 
         return $additionalSql;
     }
+
+    public function findVoucherByCode($voucherCode)
+    {
+        $voucher = Voucher::where('code',$voucherCode)->first();
+
+        return $voucher;
+    }
+
 }

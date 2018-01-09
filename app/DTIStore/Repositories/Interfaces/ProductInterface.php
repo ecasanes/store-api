@@ -49,4 +49,6 @@ interface ProductInterface
     public function deleteVoucher($id);
 
     public function findPaymentModeById($paymentModeId);
+
+    public function findVoucherByCode($voucherCode);
 }

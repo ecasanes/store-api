@@ -13,6 +13,7 @@ use App\DTIStore\Services\Traits\Product\DeliveryTrait;
 use App\DTIStore\Services\Traits\Product\ProductCategoryTrait;
 use App\DTIStore\Services\Traits\Product\ProductVariationTrait;
 use App\ProductCondition;
+use Carbon\Carbon;
 
 class ProductService
 {
@@ -219,6 +220,34 @@ class ProductService
         $paymentMode = $this->product->findPaymentModeById($paymentModeId);
 
         return $paymentMode;
+    }
+
+    public function validateVoucherByCode($voucherCode)
+    {
+        $voucher = $this->product->findVoucherByCode($voucherCode);
+
+        if(!$voucher){
+            return $voucher;
+        }
+
+        $start = $voucher->start;
+        $end = $voucher->end;
+
+        if(($start == "" || empty($start)) && ($end == "" || empty($end))){
+            return $voucher;
+        }
+
+        $startDate = Carbon::parse($start)->startOfDay();
+        $endDate = Carbon::parse($end)->endOfDay();
+
+        $now = Carbon::now()->endOfDay();
+
+        if($startDate->lte($now) && $endDate->gte($now)){
+            return $voucher;
+        }
+
+        return null;
+
     }
 
 }

@@ -354,6 +354,26 @@ class ProductController extends Controller
         return Rest::success($deleted);
     }
 
+    public function validateVoucherByCode()
+    {
+        $payload = $this->payload;
+        $data = $payload->all();
+
+        $validator = $this->validator($data, [
+            'code' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return Rest::validationFailed($validator);
+        }
+
+        $voucherCode = $data['code'];
+
+        $voucher = $this->productService->validateVoucherByCode($voucherCode);
+
+        return Rest::success($voucher);
+
+    }
 
 
 }
