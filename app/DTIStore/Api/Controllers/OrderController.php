@@ -246,6 +246,47 @@ class OrderController extends Controller
 
     }
 
+    public function receivePaymentTransactionById($transactionId)
+    {
+        $transaction = $this->orderService->findTransaction($transactionId);
+
+        if(!$transaction){
+            return Rest::notFound("Transaction not found");
+        }
+
+        $updated = $this->orderService->updateTransaction($transactionId, [
+            'seller_status' => 'received'
+        ]);
+
+        if(!$updated){
+            return Rest::failed("Something went wrong while updating transaction");
+        }
+
+        return Rest::success($updated);
+
+    }
+
+    public function completeTransactionById($transactionId)
+    {
+        $transaction = $this->orderService->findTransaction($transactionId);
+
+        if(!$transaction){
+            return Rest::notFound("Transaction not found");
+        }
+
+        $updated = $this->orderService->updateTransaction($transactionId, [
+            'buyer_status' => 'completed',
+            'seller_status' => 'completed'
+        ]);
+
+        if(!$updated){
+            return Rest::failed("Something went wrong while updating transaction");
+        }
+
+        return Rest::success($updated);
+
+    }
+
 
 
 }
