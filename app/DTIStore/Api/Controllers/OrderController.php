@@ -79,6 +79,7 @@ class OrderController extends Controller
         $voucher = $this->productService->validateVoucherByCode($voucherCode);
 
         $total = $this->productService->calculateTotalByProducts($products, $voucherCode);
+        $discount = 0;
 
         if($voucher){
 
