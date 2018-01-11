@@ -21,7 +21,7 @@ return [
     |
     */
 
-    'secret' => env('JWT_SECRET', 'mercury_jwt_secret'),
+    'secret' => env('JWT_SECRET', 'dti_jwt_secret'),
 
     /*
     |--------------------------------------------------------------------------
