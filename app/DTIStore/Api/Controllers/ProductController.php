@@ -42,25 +42,6 @@ class ProductController extends Controller
         return Rest::success($products, $productsMeta);
     }
 
-    public function getByBranchKey()
-    {
-        // key checks are done in the middleware so don't worry
-
-        $payload = $this->payload;
-        $data = $payload->all();
-        $key = $payload->key;
-
-        $branch = $this->companyService->findBranchByKey($key);
-        $branchId = $branch->id;
-
-        $data['branch_id'] = $branchId;
-        $productsMeta = $this->productService->getFilterMeta($data);
-        $products = $this->productService->filter($data);
-
-        return Rest::success($products, $productsMeta);
-
-    }
-
     public function getStoreStocksById($branchId)
     {
         $payload = $this->payload;
@@ -373,6 +354,20 @@ class ProductController extends Controller
 
         return Rest::success($voucher);
 
+    }
+
+    public function getAllCategories()
+    {
+        $categories = $this->productService->getAllProductCategories();
+
+        return Rest::success($categories);
+    }
+
+    public function getAllConditions()
+    {
+        $conditions = $this->productService->getAllConditions();
+
+        return Rest::success($conditions);
     }
 
 

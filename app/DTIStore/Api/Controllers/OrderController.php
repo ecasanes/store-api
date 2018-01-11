@@ -33,16 +33,6 @@ class OrderController extends Controller
         $this->orderService = $orderService;
     }
 
-    public function filter()
-    {
-        $payload = $this->payload;
-        $filter = $payload->all();
-
-        $orders = $this->productService->filter($filter);
-
-        return Rest::success($orders);
-    }
-
     public function create()
     {
         $payload = $this->payload;
@@ -125,46 +115,6 @@ class OrderController extends Controller
             'order' => $order
         ] + $createdRows);
 
-
-    }
-
-    public function update()
-    {
-
-    }
-
-    public function delete()
-    {
-
-    }
-
-    public function createTransaction()
-    {
-
-    }
-
-    public function updateTransaction()
-    {
-
-    }
-
-    public function deleteTransaction()
-    {
-
-    }
-
-    public function createTransactionItem()
-    {
-
-    }
-
-    public function updateTransactionItem()
-    {
-
-    }
-
-    public function deleteTransactionItem()
-    {
 
     }
 

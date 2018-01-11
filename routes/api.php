@@ -17,13 +17,9 @@ use Illuminate\Support\Facades\Route;
 
 $baseNamespace = 'Api\Controllers\\';
 
-// consists of Product, ProductVariation, ProductCategories
 $products = $baseNamespace . 'ProductController';
 $orders = $baseNamespace . 'OrderController';
 $variations = $baseNamespace . 'ProductVariationController';
-$categories = $baseNamespace . 'ProductCategoryController';
-$companies = $baseNamespace . 'CompanyController';
-$stores = $baseNamespace . 'BranchController';
 $users = $baseNamespace . 'UserController';
 
 /*
@@ -41,24 +37,6 @@ Route::group(['prefix' => 'auth'], function () use ($users) {
 
     });
 
-    Route::middleware(['auth.api.expired'])->group(function () use ($users) {
-
-        // POST - api/auth/mobile/refresh
-        Route::post('mobile/refresh', $users . '@refreshToken');
-
-    });
-
-    Route::group(['prefix' => 'mobile'], function () use ($users) {
-
-        Route::middleware(['auth.api.mobile'])->group(function () use ($users) {
-
-            // POST - api/auth/mobile/login
-            Route::post('login', $users . '@login');
-
-        });
-
-    });
-
 });
 
 
@@ -68,7 +46,7 @@ Route::group(['prefix' => 'auth'], function () use ($users) {
 |--------------------------------------------------------------------------
 */
 
-Route::group(['prefix' => 'products', 'middleware' => 'auth.jwt'], function () use ($orders, $categories, $variations, $products) {
+Route::group(['prefix' => 'products', 'middleware' => 'auth.jwt'], function () use ($orders, $variations, $products) {
 
     // POST - api/products
     Route::post('', $products . '@create');
@@ -80,9 +58,6 @@ Route::group(['prefix' => 'products', 'middleware' => 'auth.jwt'], function () u
 
         // DELETE - api/products/{id}
         Route::delete('', $products . '@delete');
-
-        // POST - api/products/{id}/upload
-        Route::post('upload', $products . '@uploadImage');
 
         Route::group(['prefix' => 'variations'], function () use ($variations) {
 
@@ -98,51 +73,27 @@ Route::group(['prefix' => 'products', 'middleware' => 'auth.jwt'], function () u
 
     Route::group(['prefix' => 'variations'], function () use ($products, $variations) {
 
-        // GET - api/products/variations
-        Route::get('', $variations . '@getAll');
-
-        // POST - api/products/variations
-        Route::post('', $variations . '@create');
-
         Route::group(['prefix' => '{id}'], function () use ($products, $variations) {
-
-            // GET - api/products/variations/{id}
-            Route::get('', $variations . '@get');
 
             // PUT - api/products/variations/{id}
             Route::put('', $variations . '@update');
-
-            // DELETE - api/products/variations/{id}
-            Route::delete('', $variations . '@delete');
 
         });
 
 
     });
 
-    Route::group(['prefix' => 'categories'], function () use ($categories) {
+    Route::group(['prefix' => 'categories'], function () use ($products) {
 
         // GET - api/products/categories
-        Route::get('', $categories . '@getAll');
-
-        // POST - api/products/categories
-        Route::post('', $categories . '@create');
-
-        // GET - api/products/categories/{id}
-        Route::get('{id}', $categories . '@get');
-
-        // DELETE - api/products/categories/{id}
-        Route::delete('{id}', $categories . '@delete');
-
-        // PUT - api/products/categories/{id}
-        Route::put('{id}', $categories . '@update');
+        Route::get('', $products . '@getAllCategories');
 
     });
 
-    Route::group(['prefix' => 'conditions'], function () use ($categories) {
+    Route::group(['prefix' => 'conditions'], function () use ($products) {
 
         // GET - api/products/categories
-        Route::get('', $categories . '@getAllConditions');
+        Route::get('', $products . '@getAllConditions');
 
     });
 
@@ -210,7 +161,7 @@ Route::group(['prefix' => 'products', 'middleware' => 'auth.jwt'], function () u
 
 /*
 |--------------------------------------------------------------------------
-| TRANSACTION Routes
+| ORDER Routes
 |--------------------------------------------------------------------------
 */
 
@@ -245,35 +196,6 @@ Route::group(['prefix' => 'orders', 'middleware' => ['auth.jwt']], function () u
 
 /*
 |--------------------------------------------------------------------------
-| STORE Routes
-|--------------------------------------------------------------------------
-*/
-
-Route::group(['prefix' => 'stores', 'middleware' => ['auth.jwt']], function () use ($stores) {
-
-    // GET - api/branches
-    Route::get('', $stores . '@getAll');
-
-    // POST - api/branches
-    Route::post('', $stores . '@create');
-
-    // GET - api/branches/{id}
-    Route::get('{id}', $stores . '@get');
-
-    // PUT - api/branches/{id}
-    Route::put('{id}', $stores . '@update');
-
-    // DELETE - api/branches/{id}
-    Route::delete('{id}', $stores . '@delete');
-
-    // GET - api/branches/key/{key}
-    Route::get('key/{key}', $stores . '@findByBranchKey');
-
-});
-
-
-/*
-|--------------------------------------------------------------------------
 | USER Routes
 |--------------------------------------------------------------------------
 */
@@ -289,26 +211,14 @@ Route::group(['prefix' => 'users', 'middleware' => 'auth.jwt'], function () use 
     // GET - api/users
     Route::get('', $users . '@getAll');
 
-    // GET - api/users/count
-    Route::get('count', $users . '@getCountByFilter');
-
     // GET - api/users/{id}
     Route::get('{id}', $users . '@get');
-
-    // GET - api/users/customers/{memberId}
-    Route::get('customers/{memberId}', $users . '@getByCustomerId');
-
-    // GET - api/users/permissions
-    Route::get('permissions/{id}', $users . '@getCompanyPermissions');
 
     // PUT - api/users{id}
     Route::put('{id}', $users . '@update');
 
     // DELETE - api/users/{id}
     Route::delete('{id}', $users . '@delete');
-
-    // POST - api/users/email
-    Route::post('email', $users . '@getFranchiseeByEmail');
 
 });
 
