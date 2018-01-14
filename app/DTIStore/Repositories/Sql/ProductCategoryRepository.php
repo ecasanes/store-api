@@ -197,4 +197,15 @@ class ProductCategoryRepository implements ProductCategoryInterface {
         return $categories;
     }
 
+    public function getAllWithProducts()
+    {
+        $categories = Category::where('product_categories.id','!=',null)
+            ->join('products','products.product_category_id','=','product_categories.id')
+            ->where('products.status','=','active')
+            ->select(DB::raw('DISTINCT(product_categories.id)'),'product_categories.*')
+            ->get();
+
+        return $categories;
+    }
+
 }

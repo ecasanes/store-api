@@ -250,4 +250,11 @@ class ProductService
 
     }
 
+    public function getAllCategoriesWithProducts()
+    {
+        $categories = $this->category->getAllWithProducts();
+
+        return $categories;
+    }
+
 }

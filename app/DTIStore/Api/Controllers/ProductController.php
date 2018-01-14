@@ -358,6 +358,23 @@ class ProductController extends Controller
 
     public function getAllCategories()
     {
+        $payload = $this->payload;
+        $filter = $payload->all();
+
+        $byProducts = false;
+
+        if(isset($filter['with_products'])){
+            $byProducts = $filter['with_products'];
+        }
+
+        if($byProducts){
+
+            $categories = $this->productService->getAllCategoriesWithProducts();
+
+            return Rest::success($categories);
+
+        }
+
         $categories = $this->productService->getAllProductCategories();
 
         return Rest::success($categories);

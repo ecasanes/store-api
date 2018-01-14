@@ -83,13 +83,6 @@ Route::group(['prefix' => 'products', 'middleware' => 'auth.jwt'], function () u
 
     });
 
-    Route::group(['prefix' => 'categories'], function () use ($products) {
-
-        // GET - api/products/categories
-        Route::get('', $products . '@getAllCategories');
-
-    });
-
     Route::group(['prefix' => 'conditions'], function () use ($products) {
 
         // GET - api/products/categories
@@ -228,4 +221,7 @@ Route::post('buyers/new', $users . '@create');
 
 // GET - api/products
 Route::get('products', $products . '@getAll');
+
+// GET - api/products/categories
+Route::get('products/categories', $products . '@getAllCategories');
 

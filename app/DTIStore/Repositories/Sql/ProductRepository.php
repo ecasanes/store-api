@@ -491,9 +491,7 @@ class ProductRepository implements ProductInterface
         $categorySql = "";
         $variationSql = "";
         $querySql = "";
-        $orderSql = "";
-        $order = "DESC";
-        $orderBy = "";
+        $orderSql = " ORDER BY products.product_category_id ASC, products.name ASC";
         $fromSql = "";
         $toSql = "";
 
@@ -535,47 +533,6 @@ class ProductRepository implements ProductInterface
             ) 
             LIKE LOWER('%{$query}%') ";
         }
-
-        if (isset($filter['order'])) {
-            $order = $filter['order'];
-        }
-
-        if (isset($filter['order_by']) || isset($filter['sort'])) {
-            if (isset($filter['order_by'])) {
-                $orderBy = $filter['order_by'];
-            }
-            if (isset($filter['sort'])) {
-                $orderBy = $filter['sort'];
-            }
-        }
-
-        switch ($orderBy) {
-            case 'name':
-                $orderSql = " ORDER BY products.{$orderBy} {$order}, product_variations.size ASC ";
-                break;
-            case 'date':
-                $orderSql = " ORDER BY products.{$orderBy} {$order}";
-                break;
-            case 'selling_price':
-                $orderSql = " ORDER BY product_variations.{$orderBy} {$order}";
-                break;
-            case 'cost_price':
-                $orderSql = " ORDER BY product_variations.{$orderBy} {$order}";
-                break;
-            default:
-                $orderSql = " ORDER BY products.name ASC";
-                break;
-        }
-
-//        if(isset($filter['from'])) {
-//            $from = $filter['from'];
-//            $fromSql = " AND products.created_at >= DATE('{$from}')";
-//        }
-//
-//        if(isset($filter['to'])) {
-//            $to = $filter['to'];
-//            $toSql = " AND products.created_at <= DATE('{$to}')";
-//        }
 
         $additionalSql = $branchSql . $categorySql . $variationSql . $querySql . $orderSql . $fromSql . $toSql;
 

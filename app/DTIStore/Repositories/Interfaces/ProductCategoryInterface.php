@@ -23,4 +23,6 @@ interface ProductCategoryInterface
     public function isDeleted($id);
 
     public function getByTransactionId($transactionId);
+
+    public function getAllWithProducts();
 }
