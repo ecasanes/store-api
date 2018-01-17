@@ -200,6 +200,7 @@ class ProductService
     public function calculateTotalByProducts($products)
     {
         $total = 0;
+        $totalShipping = 0;
 
         foreach($products as $product){
 
@@ -207,11 +208,12 @@ class ProductService
             $shippingPrice = $product['shipping_price'];
             $quantity = $product['quantity'];
 
-            $total += ($sellingPrice*$quantity)+($shippingPrice*$quantity);
+            $total += ($sellingPrice*$quantity);
+            $totalShipping += $shippingPrice;
 
         }
 
-        return $total;
+        return $total+$totalShipping;
 
     }
 

@@ -115,6 +115,7 @@ class OrderService
         foreach($productsByStores as $storeId => $storeProducts){
 
             $total = 0;
+            $totalShipping = 0;
 
             $transaction = $this->transaction->create([
                 'store_id' => $storeId,
@@ -139,7 +140,8 @@ class OrderService
                     'transaction_id' => $transaction->id
                 ]);
 
-                $total += ($sellingPrice*$quantity)+($shippingPrice*$quantity);
+                $total += ($sellingPrice*$quantity);
+                $totalShipping += $shippingPrice;
 
                 if($discount>0){
                     $total = $total - ($discount/$storeCount);
@@ -151,7 +153,7 @@ class OrderService
             }
 
             $this->transaction->update($transaction->id, [
-                'total' => $total
+                'total' => $total+$totalShipping
             ]);
 
         }
