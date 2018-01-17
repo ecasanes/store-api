@@ -57,6 +57,26 @@ class UserController extends Controller
         return Rest::success($this->user);
     }
 
+    public function changeCurrentPassword()
+    {
+        $payload = $this->payload;
+        $data = $payload->all();
+
+        $user = $this->user;
+
+        $validator = $this->validator($data, [
+            'password' => 'confirmed'
+        ]);
+
+        if ($validator->fails()) {
+            return Rest::validationFailed($validator);
+        }
+
+        $updated = $this->userService->update($user->id, $data);
+
+        return Rest::success($updated);
+    }
+
     public function getCountByFilter()
     {
         $payload = $this->payload;

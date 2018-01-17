@@ -201,6 +201,9 @@ Route::group(['prefix' => 'users', 'middleware' => 'auth.jwt'], function () use 
     // GET - api/users/current
     Route::get('current', $users . '@getCurrent');
 
+    // POST - api/users/current/change-password
+    Route::post('current/change-password', $users . '@changeCurrentPassword');
+
     // GET - api/users
     Route::get('', $users . '@getAll');
 
