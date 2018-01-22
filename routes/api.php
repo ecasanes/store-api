@@ -179,7 +179,7 @@ Route::group(['prefix' => 'orders', 'middleware' => ['auth.jwt']], function () u
     Route::put('transactions/{id}/ship', $orders . '@shipTransactionById');
 
     // PUT - api/orders/transactions/{id}/receive-payment
-    Route::put('transactions/{id}/receive-payment', $orders . '@receivePaymentTransactionById');
+    Route::put('transactions/{id}/receive-payment', $orders . '@completeTransactionById');
 
     // PUT - api/orders/transactions/{id}/complete
     Route::put('transactions/{id}/complete', $orders . '@completeTransactionById');
